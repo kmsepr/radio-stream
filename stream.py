@@ -31,7 +31,6 @@ RADIO_STATIONS = {
     "air_calicut": "https://air.pc.cdn.bitgravity.com/air/live/pbaudio082/chunklist.m3u8",
     "sam_yemen": "https://edge.mixlr.com/channel/kijwr",
     "afaq": "https://edge.mixlr.com/channel/rumps",
-    "al_jazeera": "http://live-his-audio-web-aja.getaj.net/VOICE-AJA/index.m3u8",
     "alfasi_radio": "https://qurango.net/radio/mishary_alafasi",
     "tafsir_quran": "https://radio.quranradiotafsir.com/9992/stream",
     "malayalam_1": "http://167.114.131.90:5412/stream",
