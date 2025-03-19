@@ -44,7 +44,7 @@ RADIO_STATIONS = {
     "quran_radio_cairo": "http://n02.radiojar.com/8s5u5tpdtwzuv?listening-from-radio-garden-1620219571863&rj-ttl=5&rj-tok=AAABivzcwaEAh735PZBqcATySw",
     "quran_radio_nablus": "http://www.quran-radio.org:8002/",
     "hajj_channel": "http://104.7.66.64:8005",
-    "allahu_akbar_radio": "http://66.45.232.132.9996/",
+    "allahu_akbar_radio": "http://66.45.232.132.9996/stream",
     "omar_abdul_kafi_radio": "http://104.7.66.64:8007",
     "asianet_news": "https://vidcdn.vidgyor.com/asianet-origin/audioonly/chunks.m3u8",
     "yemen_talk": "http://stream.zeno.fm/7qv7c8eq7hhvv",
