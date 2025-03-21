@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 # 📡 List of radio stations
 RADIO_STATIONS = {
-     "rubat_ataq": "http://stream.zeno.fm/5tpfc8d7xqruv",
+    "rubat_ataq": "http://stream.zeno.fm/5tpfc8d7xqruv",
     "shahul_radio": "https://stream-150.zeno.fm/cynbm5ngx38uv?zs=Ktca5StNRWm-sdIR7GloVg",
     "eram_fm": "http://icecast2.edisimo.com:8000/eramfm.mp3",
     "abc_islam": "http://s10.voscast.com:9276/stream",
@@ -49,7 +49,8 @@ RADIO_STATIONS = {
     "asianet_news": "https://vidcdn.vidgyor.com/asianet-origin/audioonly/chunks.m3u8",
     "yemen_talk": "http://stream.zeno.fm/7qv7c8eq7hhvv",
     "safari_tv": "https://j78dp346yq5r-hls-live.5centscdn.com/safari/live.stream/chunks.m3u8",
-    "victers_tv": "https://932y4x26ljv8-hls-live.5centscdn.com/victers/tv.stream/victers/tv1/chunks.m3u8",   
+    "victers_tv": "https://932y4x26ljv8-hls-live.5centscdn.com/victers/tv.stream/victers/tv1/chunks.m3u8"
+    "air_kavarati": "https://air.pc.cdn.bitgravity.com/air/live/pbaudio189/chunklist.m3u8"
  
 }
 
