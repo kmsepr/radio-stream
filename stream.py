@@ -59,7 +59,7 @@ def generate_stream(url):
     process = None
     while True:
         if process:
-            process.kill()  # Stop the old FFmpeg instance before restarting
+            process.kill()  # Stop old FFmpeg instance before restarting
         
         process = subprocess.Popen(
             [
