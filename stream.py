@@ -47,7 +47,7 @@ RADIO_STATIONS = {
     "allahu_akbar_radio": "http://66.45.232.132:9996/stream",
     "omar_abdul_kafi_radio": "http://104.7.66.64:8007",
     "asianet_news": "https://vidcdn.vidgyor.com/asianet-origin/audioonly/chunks.m3u8",
-    "yemen_talk": "http://stream.zeno.fm/7qv7c8eq7hhvv",
+    "media_one": "http://ktv.im:8080/44444/44444/81777",
     "safari_tv": "https://j78dp346yq5r-hls-live.5centscdn.com/safari/live.stream/chunks.m3u8",
     "victers_tv": "https://932y4x26ljv8-hls-live.5centscdn.com/victers/tv.stream/victers/tv1/chunks.m3u8",
     "air_kavarati": "https://air.pc.cdn.bitgravity.com/air/live/pbaudio189/chunklist.m3u8",
