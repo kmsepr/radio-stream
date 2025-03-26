@@ -51,7 +51,35 @@ RADIO_STATIONS = {
     "safari_tv": "https://j78dp346yq5r-hls-live.5centscdn.com/safari/live.stream/chunks.m3u8",
     "victers_tv": "https://932y4x26ljv8-hls-live.5centscdn.com/victers/tv.stream/victers/tv1/chunks.m3u8",
     "air_kavarati": "https://air.pc.cdn.bitgravity.com/air/live/pbaudio189/chunklist.m3u8",
-    "al_jazeera": "http://live-hls-audio-web-aja.getaj.net/VOICE-AJA/index.m3u8"
+    "al_jazeera": "http://live-hls-audio-web-aja.getaj.net/VOICE-AJA/index.m3u8",
+    "asianet_news": "https://vidcdn.vidgyor.com/asianetnews-origin/liveabr/playlist.m3u8",
+    "manorama_news": "https://mn-nld-2.secure.footprint.net/manoramanews.m3u8",
+    "media_one": "https://mediaonelive.livestreamingcdn.com/mediaone_live/smil:mediaone.smil/playlist.m3u8",
+    "mathrubhumi_news": "https://mathrubhuminews.akamaized.net/hls/live/2016710/mnews/master.m3u8",
+    "kairali_news": "https://live.kairalitv.in/kairalinews/master.m3u8",
+    "janam_tv": "https://vidcdn.vidgyor.com/janamtv-origin/liveabr/playlist.m3u8",
+    "24_news": "https://vidcdn.vidgyor.com/twentifournews-origin/liveabr/playlist.m3u8",
+    "news18_kerala": "https://news18kerala-lh.akamaihd.net/i/n18kerala_1@175735/index_5_av-p.m3u8",
+
+    # General Entertainment Channels
+    "asianet": "https://bcovlive-a.akamaihd.net/551ae4ff5bfa46398ad46bb36d9965ec/ap-southeast-1/6280746805001/playlist.m3u8",
+    "surya_tv": "https://nexg-cf.sony-ses.com/suryatv/liveabr/playlist.m3u8",
+    "flowers_tv": "https://live.hirutv.lk/flowers/smil:flowers.smil/playlist.m3u8",
+    "kairali_tv": "https://live.kairalitv.in/kairalitv/master.m3u8",
+    "amrita_tv": "https://amritatv.in/hls/amritatv.m3u8",
+    "mazhavil_manorama": "https://mdn.manzil.live/hls/mazhavil.m3u8",
+    "we_tv": "https://mdn.manzil.live/hls/we.m3u8",
+    "zee_keralam": "https://zee5live.zee5.com/channel/zee-keralam-hd/tracks-v1a1/index.m3u8",
+
+    # Movie Channels
+    "asianet_movies": "https://bcovlive-a.akamaihd.net/551ae4ff5bfa46398ad46bb36d9965ec/ap-southeast-1/6280746805002/playlist.m3u8",
+    "surya_movies": "https://nexg-cf.sony-ses.com/suryamovies/liveabr/playlist.m3u8",
+    "mazhavil_cinema": "https://mdn.manzil.live/hls/mazhavilcinema.m3u8",
+    "zee_keralam_cinema": "https://zee5live.zee5.com/channel/zee-keralam-cinema/tracks-v1a1/index.m3u8",
+
+    # Infotainment & Music
+    "safari_tv": "https://stream.safariplus.tv/safari/master.m3u8",
+    "kappa_tv": "https://live.kappatv.in/kappatv/master.m3u8"
 
 }
 
