@@ -53,7 +53,8 @@ RADIO_STATIONS = {
     "air_kavarati": "https://air.pc.cdn.bitgravity.com/air/live/pbaudio189/chunklist.m3u8",
     "al_jazeera": "http://live-hls-audio-web-aja.getaj.net/VOICE-AJA/index.m3u8",
     "surya_comedy": "http://ktv.im:8080/44444/44444/81825",
-    "star_sports": "http://ktv.im:8080/44444/44444/5427"
+    "star_sports": "http://ktv.im:8080/44444/44444/5427",
+"asianet_movies": "http://ktv.im:8080/44444/44444/81804"
     
 
 }
