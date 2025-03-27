@@ -54,7 +54,8 @@ RADIO_STATIONS = {
     "al_jazeera": "http://live-hls-audio-web-aja.getaj.net/VOICE-AJA/index.m3u8",
     "surya_comedy": "http://ktv.im:8080/44444/44444/81825",
     "star_sports": "http://ktv.im:8080/44444/44444/5427",
-"asianet_movies": "http://ktv.im:8080/44444/44444/81804"
+    "asianet_movies": "http://ktv.im:8080/44444/44444/81804",
+    "priyan_ottathilan": "http://filex.tv:8080/movie/asdf18/1234/262694.mkv"
     
 
 }
