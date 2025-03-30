@@ -2,7 +2,7 @@ import subprocess
 import time
 from flask import Flask, Response
 
-app = Flask(name)
+app = Flask(__name__)
 
 # 📡 List of radio stations
 RADIO_STATIONS = {
@@ -89,3 +89,32 @@ def generate_stream(url):
                 "-reconnect_delay_max", "10", "-fflags", "nobuffer", "-flags", "low_delay",
                 "-i", url, "-vn", "-ac", "1", "-b:a", "40k", "-buffer_size", "1024k", "-f", "mp3", "-"
             ],
+stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=8192
+        )
+
+        print(f"🎵 Streaming from: {url} (Mono, 40kbps)")
+
+        try:
+            for chunk in iter(lambda: process.stdout.read(8192), b""):
+                yield chunk
+        except GeneratorExit:
+            process.kill()
+            break
+        except Exception as e:
+            print(f"⚠️ Stream error: {e}")
+
+        print("🔄 FFmpeg stopped, restarting stream...")
+        time.sleep(5)  # Wait before restarting
+
+# 🌍 API to stream selected station
+@app.route("/<station_name>")
+def stream(station_name):
+    url = RADIO_STATIONS.get(station_name)
+    if not url:
+        return "⚠️ Station not found", 404
+    
+    return Response(generate_stream(url), mimetype="audio/mpeg")
+
+# 🚀 Start Flask server
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000, debug=True)
