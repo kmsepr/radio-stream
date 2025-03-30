@@ -65,7 +65,7 @@ RADIO_STATIONS = {
     "asianet_movies": "http://ktv.im:8080/44444/44444/81804",
     "asianet_hd": "http://ktv.im:8080/44444/44444/81761",
   
-    "asianet_plus": "http://ktv.im:8080/44444/44444/81800",
+    "asianet_plus": "http://ktv.im:8080/44444/44444/81801",
     "flowers_tv": "http://ktv.im:8080/44444/44444/81797",
     "kairali_tv": "http://ktv.im:8080/44444/44444/81808",
     "manorama_news": "http://ktv.im:8080/44444/44444/81767",
