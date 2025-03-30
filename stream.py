@@ -81,7 +81,9 @@ RADIO_STATIONS = {
     "kaumudy_tv": "http://ktv.im:8080/44444/44444/81818",
     "kappa_tv": "http://ktv.im:8080/44444/44444/81819",
     "darshana_tv": "http://ktv.im:8080/44444/44444/81821",
-    "we_tv": "http://ktv.im:8080/44444/44444/81824"
+    "we_tv": "http://ktv.im:8080/44444/44444/81824",
+    "surya_comedy":
+"http://ktv.im:8080/44444/44444/81825"
    
     
 
