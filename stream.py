@@ -59,33 +59,7 @@ RADIO_STATIONS = {
 
     
     "safari_tv": "https://j78dp346yq5r-hls-live.5centscdn.com/safari/live.stream/chunks.m3u8",
-    "victers_tv": "https://932y4x26ljv8-hls-live.5centscdn.com/victers/tv.stream/victers/tv1/chunks.m3u8",
-    
-    
-    "asianet_movies": "http://ktv.im:8080/44444/44444/81804",
-    "asianet_hd": "http://ktv.im:8080/44444/44444/81761",
-  
-    "asianet_plus": "http://ktv.im:8080/44444/44444/81801",
-    "flowers_tv": "http://ktv.im:8080/44444/44444/81797",
-    "kairali_tv": "http://ktv.im:8080/44444/44444/81808",
-    "manorama_news": "http://ktv.im:8080/44444/44444/81767",
-    "mathrubhumi_news": "http://ktv.im:8080/44444/44444/81773",
-    "mazhavil_manorama": "http://ktv.im:8080/44444/44444/81837",
-    "reporter_tv": "http://ktv.im:8080/44444/44444/81783",
-    "surya_movies": "http://ktv.im:8080/44444/44444/81823",
-    "surya_music": "http://ktv.im:8080/44444/44444/81862",
-    "surya_tv": "http://ktv.im:8080/44444/44444/81820",
-    "zee_keralam": "http://ktv.im:8080/44444/44444/81815",
-    "kaumudy_tv": "http://ktv.im:8080/44444/44444/81832",
-    "kappa_tv": "http://ktv.im:8080/44444/44444/81833",
-    "darshana_tv": "http://ktv.im:8080/44444/44444/81851",
-    "we_tv": "http://ktv.im:8080/44444/44444/81812",
-    "surya_comedy":
-"http://ktv.im:8080/44444/44444/81825"
-   
-   
-    
-    
+    "victers_tv": "https://932y4x26ljv8-hls-live.5centscdn.com/victers/tv.stream/victers/tv1/chunks.m3u8"
 
 }
 
