@@ -48,12 +48,7 @@ RADIO_STATIONS = {
     "rubat_ataq": "http://stream.zeno.fm/5tpfc8d7xqruv",
     "al_jazeera": "http://live-hls-audio-web-aja.getaj.net/VOICE-AJA/index.m3u8",
     
-    
-    
-   
-    
-    
-    
+  
    
     "asianet_news": "https://vidcdn.vidgyor.com/asianet-origin/audioonly/chunks.m3u8",
     
@@ -70,6 +65,23 @@ RADIO_STATIONS = {
     
    
     "asianet_movies": "http://ktv.im:8080/44444/44444/81804"
+    "asianet_hd": "http://ktv.im:8080/44444/44444/81761",
+    "asianet_movies": "http://ktv.im:8080/44444/44444/81804",
+    "asianet_plus": "http://ktv.im:8080/44444/44444/81805",
+    "flowers_tv": "http://ktv.im:8080/44444/44444/81806",
+    "kairali_tv": "http://ktv.im:8080/44444/44444/81807",
+    "manorama_news": "http://ktv.im:8080/44444/44444/81808",
+    "mathrubhumi_news": "http://ktv.im:8080/44444/44444/81809",
+    "mazhavil_manorama": "http://ktv.im:8080/44444/44444/81810",
+    "reporter_tv": "http://ktv.im:8080/44444/44444/81811",
+    "surya_movies": "http://ktv.im:8080/44444/44444/81812",
+    "surya_music": "http://ktv.im:8080/44444/44444/81813",
+    "surya_tv": "http://ktv.im:8080/44444/44444/81814",
+    "zee_keralam": "http://ktv.im:8080/44444/44444/81815",
+    "kaumudy_tv": "http://ktv.im:8080/44444/44444/81818",
+    "kappa_tv": "http://ktv.im:8080/44444/44444/81819",
+    "darshana_tv": "http://ktv.im:8080/44444/44444/81821",
+    "we_tv": "http://ktv.im:8080/44444/44444/81824"
    
     
 
