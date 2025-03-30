@@ -48,12 +48,6 @@ RADIO_STATIONS = {
     "rubat_ataq": "http://stream.zeno.fm/5tpfc8d7xqruv",
     "al_jazeera": "http://live-hls-audio-web-aja.getaj.net/VOICE-AJA/index.m3u8",
     
-    
-    
-   
-    
-    
-    
    
     "asianet_news": "https://vidcdn.vidgyor.com/asianet-origin/audioonly/chunks.m3u8",
     
@@ -69,7 +63,17 @@ RADIO_STATIONS = {
     
     
    
-    "asianet_movies": "http://ktv.im:8080/44444/44444/81804"
+    "asianet_movies": "http://ktv.im:8080/44444/44444/81804",
+
+    "media_one": "http://ktv.im:8080/44444/44444/81776",
+
+    "surya_movies": "http://ktv.im:8080/44444/44444/81823",
+
+    "surya_comedy": "http://ktv.im:8080/44444/44444/81825",
+
+"amrita_tv": "http://ktv.im:8080/44444/44444/81829",
+
+"asianet_plus": "http://ktv.im:8080/44444/44444/81800"
    
     
 
