@@ -2,7 +2,7 @@ import subprocess
 import time
 from flask import Flask, Response
 
-app = Flask(__name__)
+app = Flask(name)
 
 # 📡 List of radio stations
 RADIO_STATIONS = {
@@ -48,6 +48,12 @@ RADIO_STATIONS = {
     "rubat_ataq": "http://stream.zeno.fm/5tpfc8d7xqruv",
     "al_jazeera": "http://live-hls-audio-web-aja.getaj.net/VOICE-AJA/index.m3u8",
     
+    
+    
+   
+    
+    
+    
    
     "asianet_news": "https://vidcdn.vidgyor.com/asianet-origin/audioonly/chunks.m3u8",
     
@@ -63,17 +69,7 @@ RADIO_STATIONS = {
     
     
    
-    "asianet_movies": "http://ktv.im:8080/44444/44444/81804",
-
-    "media_one": "http://ktv.im:8080/44444/44444/81776",
-
-    "surya_movies": "http://ktv.im:8080/44444/44444/81823",
-
-    "surya_comedy": "http://ktv.im:8080/44444/44444/81825",
-
-"amrita_tv": "http://ktv.im:8080/44444/44444/81829",
-
-"asianet_plus": "http://ktv.im:8080/44444/44444/81800"
+    "asianet_movies": "http://ktv.im:8080/44444/44444/81804"
    
     
 
@@ -88,36 +84,8 @@ def generate_stream(url):
             process.kill()  # Stop old FFmpeg instance before restarting
         
         process = subprocess.Popen(
-    [
-        "ffmpeg", "-re", "-i", url, "-map", "0:a:0", "-vn", "-ac", "1",
-        "-b:a", "40k", "-buffer_size", "1024k", "-c:a", "libmp3lame", "-f", "mp3", "-"
-    ],
-    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=8192
-)
-
-        print(f"🎵 Streaming from: {url} (Mono, 40kbps)")
-
-        try:
-            for chunk in iter(lambda: process.stdout.read(8192), b""):
-                yield chunk
-        except GeneratorExit:
-            process.kill()
-            break
-        except Exception as e:
-            print(f"⚠️ Stream error: {e}")
-
-        print("🔄 FFmpeg stopped, restarting stream...")
-        time.sleep(5)  # Wait before restarting
-
-# 🌍 API to stream selected station
-@app.route("/<station_name>")
-def stream(station_name):
-    url = RADIO_STATIONS.get(station_name)
-    if not url:
-        return "⚠️ Station not found", 404
-    
-    return Response(generate_stream(url), mimetype="audio/mpeg")
-
-# 🚀 Start Flask server
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True)
+            [
+                "ffmpeg", "-reconnect", "1", "-reconnect_streamed", "1",
+                "-reconnect_delay_max", "10", "-fflags", "nobuffer", "-flags", "low_delay",
+                "-i", url, "-vn", "-ac", "1", "-b:a", "40k", "-buffer_size", "1024k", "-f", "mp3", "-"
+            ],
