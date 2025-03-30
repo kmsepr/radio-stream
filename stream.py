@@ -64,7 +64,7 @@ RADIO_STATIONS = {
     
     
    
-    "asianet_movies": "http://ktv.im:8080/44444/44444/81804"
+    "asianet_movies": "http://ktv.im:8080/44444/44444/81804",
     "asianet_hd": "http://ktv.im:8080/44444/44444/81761",
     "asianet_movies": "http://ktv.im:8080/44444/44444/81804",
     "asianet_plus": "http://ktv.im:8080/44444/44444/81805",
