@@ -62,7 +62,7 @@ RADIO_STATIONS = {
     "victers_tv": "https://932y4x26ljv8-hls-live.5centscdn.com/victers/tv.stream/victers/tv1/chunks.m3u8"
 "asianet_movies: "http://ktv.im:8080/44444/44444/81804",
 
-"asianet_movies: "http://ktv.im:8080/44444/44444/81804",
+"asianet_movies: "http://ktv.im:8080/44444/44444/81804"
 
 
 
