@@ -80,10 +80,10 @@ def generate_stream(url):
         
         process = subprocess.Popen(
     [
-        "ffmpeg", "-re", "-i", url, "-vn", "-ac", "1", "-b:a", "40k",
-        "-buffer_size", "1024k", "-c:a", "libmp3lame", "-f", "mp3", "-"
+        "ffmpeg", "-re", "-i", url, "-vn", "-ac", "2", "-b:a", "64k",
+        "-buffer_size", "2048k", "-c:a", "libmp3lame", "-f", "mp3", "-"
     ],
-    stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=8192
+    stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=16384
 )
 
         print(f"🎵 Streaming from: {url} (Mono, 40kbps)")
