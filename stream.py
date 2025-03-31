@@ -67,6 +67,8 @@ RADIO_STATIONS = {
     "mazhavil_manorama": "http://ktv.im:8080/44444/44444/81837",
     "asianet_plus": "http://ktv.im:8080/44444/44444/81801",
     "media_one": "http://ktv.im:8080/44444/44444/81777",
+"kairali_we":
+"http://ktv.im:8080/44444/44444/81812",
 
 
 }
