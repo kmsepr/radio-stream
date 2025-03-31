@@ -48,7 +48,12 @@ RADIO_STATIONS = {
     "rubat_ataq": "http://stream.zeno.fm/5tpfc8d7xqruv",
     "al_jazeera": "http://live-hls-audio-web-aja.getaj.net/VOICE-AJA/index.m3u8",
     
-  
+    
+    
+   
+    
+    
+    
    
     "asianet_news": "https://vidcdn.vidgyor.com/asianet-origin/audioonly/chunks.m3u8",
     
@@ -60,16 +65,7 @@ RADIO_STATIONS = {
     
     "safari_tv": "https://j78dp346yq5r-hls-live.5centscdn.com/safari/live.stream/chunks.m3u8",
     "victers_tv": "https://932y4x26ljv8-hls-live.5centscdn.com/victers/tv.stream/victers/tv1/chunks.m3u8",
-
-    "asianet_movies": "http://ktv.im:8080/44444/44444/81804",
-    "surya_movies": "http://ktv.im:8080/44444/44444/81823",
-    "surya_comedy": "http://ktv.im:8080/44444/44444/81825",
-    "mazhavil_manorama": "http://ktv.im:8080/44444/44444/81837",
-    "asianet_plus": "http://ktv.im:8080/44444/44444/81801",
-    "media_one": "http://ktv.im:8080/44444/44444/81777",
-"kairali_we":
-"http://ktv.im:8080/44444/44444/81812",
-
+   
 
 }
 
@@ -82,12 +78,13 @@ def generate_stream(url):
             process.kill()  # Stop old FFmpeg instance before restarting
         
         process = subprocess.Popen(
-    [
-        "ffmpeg", "-re", "-i", url, "-vn", "-ac", "2", "-b:a", "64k",
-        "-buffer_size", "2048k", "-c:a", "libmp3lame", "-f", "mp3", "-"
-    ],
-    stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=16384
-)
+            [
+                "ffmpeg", "-reconnect", "1", "-reconnect_streamed", "1",
+                "-reconnect_delay_max", "10", "-fflags", "nobuffer", "-flags", "low_delay",
+                "-i", url, "-vn", "-ac", "1", "-b:a", "40k", "-buffer_size", "1024k", "-f", "mp3", "-"
+            ],
+stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=8192
+        )
 
         print(f"🎵 Streaming from: {url} (Mono, 40kbps)")
 
