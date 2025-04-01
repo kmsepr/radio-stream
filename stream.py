@@ -74,6 +74,16 @@ RADIO_STATIONS = {
 "mazhavil_manorama": "https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/mazhavilmanorama_nim_https/050522/mazhavilmanorama/playlist.m3u8",
     
  
+    
+    
+    
+    
+    
+    
+    
+    
+    "aaj_tak: "https://lmil.live-s.cdn.bitgravity.com/cdn-live/_definst_/lmil/live/aajtak_app.smil/playlist.m3u8"
+    
 }
 
 
