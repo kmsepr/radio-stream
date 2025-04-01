@@ -82,7 +82,9 @@ RADIO_STATIONS = {
     
     
     
-    "aaj_tak": "https://feeds.intoday.in/aajtak/api/aajtakhd/master.m3u8"
+    "aaj_tak": "https://feeds.intoday.in/aajtak/api/aajtakhd/master.m3u8",
+
+"bloomberg_tv": "https://bloomberg-bloomberg-3-br.samsung.wurl.tv/manifest/playlist.m3u8",
     
 }
 
