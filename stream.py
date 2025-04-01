@@ -73,9 +73,7 @@ RADIO_STATIONS = {
 
 "mazhavil_manorama": "https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/mazhavilmanorama_nim_https/050522/mazhavilmanorama/playlist.m3u8",
     
- "asianet_movies": "http://45.249.171.155:8090/anandmedia/asianetmovies_576/index.m3u8",   
-
-
+ 
 }
 
 
