@@ -82,7 +82,7 @@ RADIO_STATIONS = {
     
     
     
-    "aaj_tak: "https://lmil.live-s.cdn.bitgravity.com/cdn-live/_definst_/lmil/live/aajtak_app.smil/playlist.m3u8"
+    "aaj_tak": "https://lmil.live-s.cdn.bitgravity.com/cdn-live/_definst_/lmil/live/aajtak_app.smil/playlist.m3u8"
     
 }
 
