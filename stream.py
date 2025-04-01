@@ -78,7 +78,7 @@ RADIO_STATIONS = {
     
     
     
-    
+    "manorama_news": "http://103.199.161.254/Content/manoramanews/Live/Channel(ManoramaNews)/index.m3u8",
     
     
     
