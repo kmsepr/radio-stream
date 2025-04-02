@@ -85,6 +85,7 @@ RADIO_STATIONS = {
     "aaj_tak": "https://feeds.intoday.in/aajtak/api/aajtakhd/master.m3u8",
 
 "bloomberg_tv": "https://bloomberg-bloomberg-3-br.samsung.wurl.tv/manifest/playlist.m3u8",
+    "n1_news": "https://best-str.umn.cdn.united.cloud/stream?stream=sp1400&sp=n1info&channel=n1bos&u=n1info&p=n1Sh4redSecre7iNf0&player=m3u8",
     
 }
 
