@@ -1,6 +1,6 @@
 import subprocess
 import time
-from flask import Flask, Response, send_file
+from flask import Flask, Response,
 
 app = Flask(__name__)
 
@@ -103,11 +103,6 @@ def stream(station_name):
     if not url:
         return "⚠️ Station not found", 404
     return Response(generate_stream(url), mimetype="audio/mpeg")
-
-# 📜 Serve stationlist.xml
-@app.route('/stationlist.xml')
-def serve_stationlist():
-    return send_file("stationlist.xml", mimetype="application/xml")
 
 # 🚀 Launch the app
 if __name__ == "__main__":
