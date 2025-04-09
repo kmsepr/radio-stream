@@ -16,6 +16,7 @@ RADIO_STATIONS = {
     "swaranjali": "https://stream-161.zeno.fm/x7mve2vt01zuv?zs-D4nK05-7SSK2FZAsvumh2w",
     "radio_beat_malayalam": "http://live.exertion.in:8050/radio.mp3",
     "shahul_radio": "https://stream-150.zeno.fm/cynbm5ngx38uv?zs=Ktca5StNRWm-sdIR7GloVg",
+    "raja_radio": "http://159.203.111.241:8026/stream",
     "nonstop_hindi": "http://s5.voscast.com:8216/stream",
     "fm_gold": "https://airhlspush.pc.cdn.bitgravity.com/httppush/hispbaudio005/hispbaudio00564kbps.m3u8",
     "motivational_series": "http://104.7.66.64:8010",
