@@ -104,6 +104,10 @@ def stream(station_name):
     if not url:
         return "⚠️ Station not found", 404
     return Response(generate_stream(url), mimetype="audio/mpeg")
+@app.route("/")
+
+def index():
+    return "<br>".join(f"<a href='/{name}'>{name}</a>" for name in RADIO_STATIONS)
 
 # 🚀 Launch the app
 if __name__ == "__main__":
