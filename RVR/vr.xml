@@ -1,0 +1,49 @@
+<vr version="1.6.1" ttl="1:000000">
+  <update i="Please upgrade to a newer version of VirtualRadio. Press OK to download and install." u="https://nokiapps40.neocities.org/vr.xml"/>
+  <banner url="http://vradioorg.appspot.com/control/lp?w=${WIDTH}" imgurl="http://ninj.com/vradio/aircel/img/by_width.php?width=${WIDTH}"/>
+
+  <vr>
+    <g t="Malayalam">
+      <c t="Muthnabi radio" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/muthnabi_radio"/>
+      <c t="Manjeri FM" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/manjeri_fm"/>
+      <c t="Real FM" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/real_fm"/>
+      <c t="Safari tv" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/safari_tv"/>
+      <c t="Kairali we" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/kairali_we"/>
+      <c t="Mazhavil Manorama" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/mazhavil_manorama"/>
+      <c t="Asianet news" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/asianet_news"/>
+      <c t="AIR Kavarati" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/air_kavarati"/>
+      <c t="AIR Kozhikode" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/air_calicut"/>
+      <c t="Aural oldies" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/aural_oldies"/>
+      <c t="Malayalam 90s" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/malayalam_90s"/>
+      <c t="24 News" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/24_news"/>
+      <c t="Shahul radio" u="https://surviving-audy-sadiqkm-fb03800f.koyeb.app/shahul_radio"/>
+      <c t="Swaranjali" u="https://surviving-audy-sadiqkm-fb03800f.koyeb.app/swaranjali"/>
+    </g>
+
+    <g t="Arabic">
+      <c t="Quran Radio Nablus" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/quran_radio_nablus"/>
+      <c t="Alfasi radio" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/alfasi_radio"/>
+      <c t="Sanaa radio" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/alfasi_radio"/>
+    </g>
+
+    <g t="Islamic">
+      <c t="Motivational series" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/motivational_series"/>
+      <c t="Deenagers radio" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/deenagers_radio"/>
+      <c t="Hajj channel" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/hajj_channel"/>
+      <c t="Abc islam" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/abc_islam"/>
+    </g>
+
+    <g t="Hindi">
+      <c t="FM Gold" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/fm_gold"/>
+      <c t="Non stop hindi" u="https://surviving-audy-sadiqkm-fb03800f.koyeb.app/nonstop_hindi"/>
+    </g>
+
+    <g t="Tamil">
+      <c t="Raja radio" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/raja_radio"/>
+    </g>
+
+    <g t="English">
+      <c t="Bloomberg tv" u="http://surviving-audy-sadiqkm-fb03800f.koyeb.app/bloomberg_tv"/>
+    </g>
+  </vr>
+</vr>
