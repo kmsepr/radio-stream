@@ -64,6 +64,9 @@ RADIO_STATIONS = {
     "bloomberg_tv": "https://bloomberg-bloomberg-3-br.samsung.wurl.tv/manifest/playlist.m3u8",
     "france_24": "https://live.france24.com/hls/live/2037218/F24_EN_HI_HLS/master_500.m3u8",
     "n1_news": "https://best-str.umn.cdn.united.cloud/stream?stream=sp1400&sp=n1info&channel=n1bos&u=n1info&p=n1Sh4redSecre7iNf0&player=m3u8",
+
+"rtesp": "https://rt-esp.rttv.com/dvr/rtesp/playlist.m3u8",
+
     "vom_radio": "https://radio.psm.mv/draair",
 }
 
