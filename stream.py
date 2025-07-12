@@ -50,7 +50,7 @@ RADIO_STATIONS = {
     "air_calicut": "https://air.pc.cdn.bitgravity.com/air/live/pbaudio082/chunklist.m3u8",
     "manjeri_fm": "https://air.pc.cdn.bitgravity.com/air/live/pbaudio101/chunklist.m3u8",
     "real_fm": "http://air.pc.cdn.bitgravity.com/air/live/pbaudio083/playlist.m3u8",
-    "vom_news": "https://psmnews.mv/stream/radio-dhivehi-raajjeyge-adu",
+    
     "safari_tv": "https://j78dp346yq5r-hls-live.5centscdn.com/safari/live.stream/chunks.m3u8",
     "victers_tv": "https://932y4x26ljv8-hls-live.5centscdn.com/victers/tv.stream/victers/tv1/chunks.m3u8",
     "kairali_we": "https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/wetv_nim_https/050522/wetv/playlist.m3u8",
@@ -67,8 +67,8 @@ RADIO_STATIONS = {
 
     "rt_esp": "https://rt-esp.rttv.com/dvr/rtesp/playlist_64Kb.m3u8",
 
-    "vom_radio": "https://radio.psm.mv/draair",
 }
+
 
 # 🔄 Streaming function with error handling
 def generate_stream(url):
