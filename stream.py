@@ -1,6 +1,6 @@
 import subprocess
 import time
-from flask import Flask, Response
+from flask import Flask, Response, render_template_string, request
 
 app = Flask(__name__)
 
@@ -50,7 +50,6 @@ RADIO_STATIONS = {
     "air_calicut": "https://air.pc.cdn.bitgravity.com/air/live/pbaudio082/chunklist.m3u8",
     "manjeri_fm": "https://air.pc.cdn.bitgravity.com/air/live/pbaudio101/chunklist.m3u8",
     "real_fm": "http://air.pc.cdn.bitgravity.com/air/live/pbaudio083/playlist.m3u8",
-    
     "safari_tv": "https://j78dp346yq5r-hls-live.5centscdn.com/safari/live.stream/chunks.m3u8",
     "victers_tv": "https://932y4x26ljv8-hls-live.5centscdn.com/victers/tv.stream/victers/tv1/chunks.m3u8",
     "kairali_we": "https://yuppmedtaorire.akamaized.net/v1/master/a0d007312bfd99c47f76b77ae26b1ccdaae76cb1/wetv_nim_https/050522/wetv/playlist.m3u8",
@@ -64,13 +63,10 @@ RADIO_STATIONS = {
     "bloomberg_tv": "https://bloomberg-bloomberg-3-br.samsung.wurl.tv/manifest/playlist.m3u8",
     "france_24": "https://live.france24.com/hls/live/2037218/F24_EN_HI_HLS/master_500.m3u8",
     "n1_news": "https://best-str.umn.cdn.united.cloud/stream?stream=sp1400&sp=n1info&channel=n1bos&u=n1info&p=n1Sh4redSecre7iNf0&player=m3u8",
-
     "rt_esp": "https://rt-esp.rttv.com/dvr/rtesp/playlist_64Kb.m3u8",
-
 }
 
-
-# 🔄 Streaming function with error handling
+# 🔄 Streaming function
 def generate_stream(url):
     process = None
     while True:
@@ -86,7 +82,7 @@ def generate_stream(url):
             stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=8192
         )
 
-        print(f"🎵 Streaming from: {url} (Mono, 40kbps)")
+        print(f"🎵 Streaming from: {url} (Mono, 24kbps)")
 
         try:
             for chunk in iter(lambda: process.stdout.read(8192), b""):
@@ -107,10 +103,65 @@ def stream(station_name):
     if not url:
         return "⚠️ Station not found", 404
     return Response(generate_stream(url), mimetype="audio/mpeg")
-@app.route("/")
 
+# 📇 Paginated index with cards
+@app.route("/")
 def index():
-    return "<br>".join(f"<a href='/{name}'>{name}</a>" for name in RADIO_STATIONS)
+    # Pagination parameters
+    page = int(request.args.get("page", 1))
+    per_page = 5  # ✅ 5 stations per page
+    stations = list(RADIO_STATIONS.items())
+    total_pages = (len(stations) + per_page - 1) // per_page
+    start = (page - 1) * per_page
+    end = start + per_page
+    paginated_stations = stations[start:end]
+
+    html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Radio Stations</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body { padding: 20px; background: #f8f9fa; }
+            .card { margin-bottom: 15px; }
+        </style>
+    </head>
+    <body>
+        <h2 class="mb-4">🎵 Radio Stations</h2>
+        <div class="row">
+            {% for name, url in stations %}
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ name.replace('_', ' ').title() }}</h5>
+                        <a href="/{{ name }}" class="btn btn-primary btn-sm">Listen</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination">
+                {% if page > 1 %}
+                <li class="page-item"><a class="page-link" href="/?page={{ page-1 }}">Previous</a></li>
+                {% endif %}
+                {% for p in range(1, total_pages + 1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link" href="/?page={{ p }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+                {% if page < total_pages %}
+                <li class="page-item"><a class="page-link" href="/?page={{ page+1 }}">Next</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </body>
+    </html>
+    """
+
+    return render_template_string(html, stations=paginated_stations, page=page, total_pages=total_pages)
 
 # 🚀 Launch the app
 if __name__ == "__main__":
