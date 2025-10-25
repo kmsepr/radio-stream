@@ -9,7 +9,6 @@ if __name__ != "__main__":
         def __init__(self): pass
         def kill(self): pass
         def stdout(self):
-            # Mock read function for iter
             yield b""
             
     class MockSubprocess:
@@ -22,7 +21,7 @@ if __name__ != "__main__":
 
 app = Flask(__name__)
 
-# 📡 List of radio stations (kept for completeness)
+# 📡 List of radio stations
 RADIO_STATIONS = {
     "muthnabi_radio": "http://cast4.my-control-panel.com/proxy/muthnabi/stream",
     "radio_nellikka": "https://usa20.fastcast4u.com:2130/stream",
@@ -118,7 +117,7 @@ def stream_station(station_name):
         return "⚠️ Station not found", 404
     return Response(generate_stream(url), mimetype="audio/mpeg")
 
-# 📻 Keypad-friendly interface with Copy URL option and Play in List
+# 📻 Keypad-friendly interface with Grid Cards
 @app.route("/")
 def index():
     stations = list(RADIO_STATIONS.items())
@@ -138,48 +137,78 @@ def index():
                 color: lime; 
                 font-family: monospace; 
                 text-align: center; 
-                /* 🚨 FIX: Increased padding to keep list items above fixed player */
-                padding-bottom: 120px; 
+                padding: 10px; /* Base padding */
+                padding-bottom: 120px; /* Space for the fixed player */
             }
-            h2 { font-size: 22px; margin: 10px; }
+            h2 { 
+                font-size: 24px; 
+                margin: 15px 0 25px 0; 
+                color: #00ff00; /* Brighter lime for header */
+            }
+            
+            /* 🚀 GRID CONTAINER STYLES */
+            #list {
+                display: grid;
+                /* Responsive grid: 1 column on small screens, 2 on medium/large */
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+                padding: 0;
+                list-style: none; /* Remove list dots/numbers if any */
+            }
+            
+            /* 💳 CARD STYLES */
             .station { 
-                padding: 10px; 
-                border-bottom: 1px solid #333; 
+                background: #1a1a1a; /* Dark background for the card */
+                color: yellow;
+                padding: 15px; 
+                border: 1px solid lime; 
+                border-radius: 8px; /* Rounded corners */
+                box-shadow: 0 4px 10px rgba(0, 255, 0, 0.2); /* Neon glow effect */
+                
                 display: flex;
-                justify-content: space-between; 
-                align-items: center;
+                flex-direction: column; /* Stack elements vertically */
+                justify-content: space-between;
+                align-items: flex-start;
+                min-height: 120px; /* Ensure cards have a minimum height */
             }
             .station-title {
                 color: yellow; 
-                text-decoration: none; 
-                padding: 5px;
-                flex-grow: 1; 
+                font-size: 18px;
+                font-weight: bold;
                 text-align: left;
+                margin-bottom: 10px;
             }
+            
+            /* BUTTON GROUP STYLES */
             .controls-group {
                 display: flex;
-                gap: 5px;
+                justify-content: space-between; /* Push buttons to the ends */
+                width: 100%;
+                gap: 10px;
             }
             .list-button {
+                flex-grow: 1; /* Make buttons expand to fill space */
+                text-align: center;
                 border: 1px solid lime;
-                padding: 5px 10px;
+                padding: 8px 10px;
                 cursor: pointer;
                 font-weight: bold;
                 text-decoration: none;
                 font-family: monospace;
+                border-radius: 4px;
             }
             .play-button {
-                background: green;
-                color: black;
+                background: #008000; /* Darker green */
+                color: white;
             }
             .copy-button {
                 background: #333;
-                color: white;
+                color: lime;
             }
-            .play-button:hover { background: #00ff00; }
-            .copy-button:hover { background: #555; }
+            .play-button:hover { background: #00ff00; color: black; }
+            .copy-button:hover { background: #555; color: white; }
             
-            /* Player styles - make it fixed at the bottom */
+            /* PLAYER STYLES (Fixed at bottom) */
             #player {
                 position: fixed; 
                 bottom: 0; 
@@ -193,16 +222,6 @@ def index():
             }
             audio { width: 90%; margin-top: 5px; }
             .info { margin-top: 5px; font-size: 16px; }
-            .player-controls button { 
-                background: #333; 
-                color: white; 
-                border: 1px solid lime; 
-                padding: 5px 10px; 
-                margin: 5px; 
-                cursor: pointer; 
-                font-family: monospace;
-            }
-            .player-controls button:hover { background: #555; }
         </style>
     </head>
     <body>
@@ -211,8 +230,9 @@ def index():
             {% for name, url in stations %}
                 <div class="station">
                     <span class="station-title">{{ loop.index }}. {{ name.replace('_',' ').title() }}</span>
+                    
                     <div class="controls-group">
-                        <a href="#" onclick="copyUrlFromList('{{name}}', this)" class="list-button copy-button" id="copy-{{name}}">🔗 URL</a>
+                        <a href="#" onclick="copyUrlFromList('{{name}}', this)" class="list-button copy-button" id="copy-{{name}}">🔗 Copy URL</a>
                         <a href="#" onclick="play('{{name}}')" class="list-button play-button">▶ PLAY</a>
                     </div>
                 </div>
@@ -245,6 +265,9 @@ def index():
                 
                 now.textContent = "▶ " + station.replace(/_/g, " ").toUpperCase();
                 player.style.display = "block";
+                
+                // Optional: Scroll to the bottom to focus on the player
+                window.scrollTo(0, document.body.scrollHeight); 
             }
             
             // Function to copy URL from the list view
@@ -258,7 +281,7 @@ def index():
                         setTimeout(() => buttonElement.textContent = originalText, 3000);
                     }).catch(err => {
                         buttonElement.textContent = '❌ Failed!';
-                        setTimeout(() => buttonElement.textContent = '🔗 URL', 3000);
+                        setTimeout(() => buttonElement.textContent = '🔗 Copy URL', 3000);
                     });
                 } else {
                     // Fallback for older browsers 
