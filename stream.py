@@ -138,7 +138,8 @@ def index():
                 font-family: monospace; 
                 text-align: center; 
                 padding: 10px;
-                padding-bottom: 120px; /* Space for the fixed player */
+                /* 🚨 FIX: Increased padding to ensure all grid cards are visible above fixed player */
+                padding-bottom: 180px; 
             }
             h2 { 
                 font-size: 24px; 
@@ -181,12 +182,12 @@ def index():
             /* BUTTON GROUP STYLES - List View */
             .controls-group {
                 display: flex;
-                justify-content: flex-start; /* Only need to push the Play button now */
+                justify-content: flex-start;
                 width: 100%;
                 gap: 10px;
             }
             .list-button {
-                flex-grow: 1; /* Make button expand to fill space */
+                flex-grow: 1;
                 text-align: center;
                 border: 1px solid lime;
                 padding: 8px 10px;
@@ -195,7 +196,7 @@ def index():
                 text-decoration: none;
                 font-family: monospace;
                 border-radius: 4px;
-                max-width: 100%; /* Ensure button doesn't stretch too wide */
+                max-width: 100%;
             }
             .play-button {
                 background: #008000;
