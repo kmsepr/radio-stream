@@ -138,7 +138,8 @@ def index():
                 color: lime; 
                 font-family: monospace; 
                 text-align: center; 
-                padding-bottom: 50px;
+                /* 🚨 FIX: Increased padding to keep list items above fixed player */
+                padding-bottom: 120px; 
             }
             h2 { font-size: 22px; margin: 10px; }
             .station { 
@@ -157,7 +158,7 @@ def index():
             }
             .controls-group {
                 display: flex;
-                gap: 5px; /* Space between buttons */
+                gap: 5px;
             }
             .list-button {
                 border: 1px solid lime;
