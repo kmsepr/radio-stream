@@ -137,39 +137,38 @@ def index():
                 color: lime; 
                 font-family: monospace; 
                 text-align: center; 
-                padding: 10px; /* Base padding */
+                padding: 10px;
                 padding-bottom: 120px; /* Space for the fixed player */
             }
             h2 { 
                 font-size: 24px; 
                 margin: 15px 0 25px 0; 
-                color: #00ff00; /* Brighter lime for header */
+                color: #00ff00; 
             }
             
             /* 🚀 GRID CONTAINER STYLES */
             #list {
                 display: grid;
-                /* Responsive grid: 1 column on small screens, 2 on medium/large */
                 grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
                 gap: 20px;
                 padding: 0;
-                list-style: none; /* Remove list dots/numbers if any */
+                list-style: none;
             }
             
             /* 💳 CARD STYLES */
             .station { 
-                background: #1a1a1a; /* Dark background for the card */
+                background: #1a1a1a;
                 color: yellow;
                 padding: 15px; 
                 border: 1px solid lime; 
-                border-radius: 8px; /* Rounded corners */
-                box-shadow: 0 4px 10px rgba(0, 255, 0, 0.2); /* Neon glow effect */
+                border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0, 255, 0, 0.2);
                 
                 display: flex;
-                flex-direction: column; /* Stack elements vertically */
+                flex-direction: column;
                 justify-content: space-between;
                 align-items: flex-start;
-                min-height: 120px; /* Ensure cards have a minimum height */
+                min-height: 120px;
             }
             .station-title {
                 color: yellow; 
@@ -179,15 +178,15 @@ def index():
                 margin-bottom: 10px;
             }
             
-            /* BUTTON GROUP STYLES */
+            /* BUTTON GROUP STYLES - List View */
             .controls-group {
                 display: flex;
-                justify-content: space-between; /* Push buttons to the ends */
+                justify-content: flex-start; /* Only need to push the Play button now */
                 width: 100%;
                 gap: 10px;
             }
             .list-button {
-                flex-grow: 1; /* Make buttons expand to fill space */
+                flex-grow: 1; /* Make button expand to fill space */
                 text-align: center;
                 border: 1px solid lime;
                 padding: 8px 10px;
@@ -196,17 +195,13 @@ def index():
                 text-decoration: none;
                 font-family: monospace;
                 border-radius: 4px;
+                max-width: 100%; /* Ensure button doesn't stretch too wide */
             }
             .play-button {
-                background: #008000; /* Darker green */
+                background: #008000;
                 color: white;
             }
-            .copy-button {
-                background: #333;
-                color: lime;
-            }
             .play-button:hover { background: #00ff00; color: black; }
-            .copy-button:hover { background: #555; color: white; }
             
             /* PLAYER STYLES (Fixed at bottom) */
             #player {
@@ -222,6 +217,36 @@ def index():
             }
             audio { width: 90%; margin-top: 5px; }
             .info { margin-top: 5px; font-size: 16px; }
+            
+            /* PLAYER CONTROLS STYLES */
+            .player-controls {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 15px;
+                margin-top: 5px;
+            }
+            .player-controls button { 
+                background: #333; 
+                color: white; 
+                border: 1px solid lime; 
+                padding: 5px 10px; 
+                cursor: pointer; 
+                font-family: monospace;
+                border-radius: 4px;
+            }
+            .player-controls button:hover { background: #555; }
+            
+            /* Style for the Copy URL button in the player */
+            #playerCopyButton {
+                background: #555;
+                color: white;
+                border: 1px solid white;
+            }
+            #playerCopyButton:hover {
+                background: #777;
+            }
+            
         </style>
     </head>
     <body>
@@ -232,7 +257,6 @@ def index():
                     <span class="station-title">{{ loop.index }}. {{ name.replace('_',' ').title() }}</span>
                     
                     <div class="controls-group">
-                        <a href="#" onclick="copyUrlFromList('{{name}}', this)" class="list-button copy-button" id="copy-{{name}}">🔗 Copy URL</a>
                         <a href="#" onclick="play('{{name}}')" class="list-button play-button">▶ PLAY</a>
                     </div>
                 </div>
@@ -242,9 +266,12 @@ def index():
         <div id="player" style="display:none;">
             <div class="info" id="nowPlaying"></div>
             <audio id="audio" controls autoplay></audio>
+            
             <div class="player-controls">
-                <div class="info">Press 2=Prev 5=Play/Pause 8=Next 0=Back</div>
+                <button onclick="copyUrl()" id="playerCopyButton">🔗 Copy Current URL</button>
             </div>
+
+            <div class="info">Press 2=Prev 5=Play/Pause 8=Next 0=Back</div>
         </div>
         
         <script>
@@ -254,6 +281,7 @@ def index():
             const player = document.getElementById("player");
             const now = document.getElementById("nowPlaying");
             const streamBaseUrl = "{{ stream_base_url }}"; 
+            const playerCopyBtn = document.getElementById("playerCopyButton");
 
             // Function to handle play action
             function play(name){
@@ -265,23 +293,24 @@ def index():
                 
                 now.textContent = "▶ " + station.replace(/_/g, " ").toUpperCase();
                 player.style.display = "block";
+                playerCopyBtn.textContent = '🔗 Copy Current URL'; // Reset button text
                 
-                // Optional: Scroll to the bottom to focus on the player
                 window.scrollTo(0, document.body.scrollHeight); 
             }
             
-            // Function to copy URL from the list view
-            function copyUrlFromList(stationName, buttonElement){
+            // Function to copy URL from the mini-player (uses current station)
+            function copyUrl(){
+                if(current === -1) return;
+                const stationName = stations[current][0];
                 const streamUrl = streamBaseUrl + stationName;
 
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(streamUrl).then(() => {
-                        const originalText = buttonElement.textContent;
-                        buttonElement.textContent = '✅ Copied!';
-                        setTimeout(() => buttonElement.textContent = originalText, 3000);
+                        playerCopyBtn.textContent = '✅ Copied!';
+                        setTimeout(() => playerCopyBtn.textContent = '🔗 Copy Current URL', 3000);
                     }).catch(err => {
-                        buttonElement.textContent = '❌ Failed!';
-                        setTimeout(() => buttonElement.textContent = '🔗 Copy URL', 3000);
+                        playerCopyBtn.textContent = '❌ Failed!';
+                        setTimeout(() => playerCopyBtn.textContent = '🔗 Copy Current URL', 3000);
                     });
                 } else {
                     // Fallback for older browsers 
@@ -292,13 +321,12 @@ def index():
                     document.execCommand('copy');
                     document.body.removeChild(tempInput);
                     
-                    const originalText = buttonElement.textContent;
-                    buttonElement.textContent = '✅ Copied!';
-                    setTimeout(() => buttonElement.textContent = originalText, 3000);
+                    playerCopyBtn.textContent = '✅ Copied!';
+                    setTimeout(() => playerCopyBtn.textContent = '🔗 Copy Current URL', 3000);
                 }
             }
-
-
+            
+            // Player Navigation/Control functions
             function prev(){
                 if(current > 0){ play(stations[current-1][0]); }
             }
