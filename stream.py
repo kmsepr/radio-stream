@@ -1,15 +1,19 @@
 import subprocess
 import time
-from flask import Flask, Response, render_template_string, request, url_for, jsonify
+from flask import Flask, Response, render_template_string, request, url_for
 import sys
 
 # Check if we are running the Flask app directly
+# This section ensures the app can run even if the environment lacks a real 'subprocess'
+# or if it's imported for testing without the necessary libraries.
 if __name__ != "__main__":
-    # If not running directly, ensure a basic subprocess placeholder is available for testing/import
     class MockProcess:
         def __init__(self): pass
         def kill(self): pass
-    
+        def stdout(self):
+            # Mock read function for iter
+            yield b""
+            
     class MockSubprocess:
         PIPE = 0
         DEVNULL = 1
@@ -76,20 +80,16 @@ def generate_stream(url):
     process = None
     while True:
         if process:
-            # First version of the code snippet only used kill(), using it here for consistency
             process.kill() 
 
-        # Using parameters from the second, more detailed 'generate_stream' snippet
         command = [
             "ffmpeg", "-reconnect", "1", "-reconnect_streamed", "1",
             "-reconnect_delay_max", "10", "-fflags", "nobuffer", "-flags", "low_delay",
             "-i", url, "-vn", "-ac", "1", "-b:a", "24k", "-buffer_size", "1024k", "-f", "mp3", "-"
         ]
         
-        # Log command/stream info (optional, for debugging)
-        # print(f"🎵 Starting stream for: {url}")
-
         try:
+            # Note: subprocess must be a real module for this to work outside of the mock environment
             process = subprocess.Popen(
                 command,
                 stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=8192
@@ -107,11 +107,9 @@ def generate_stream(url):
             for chunk in iter(lambda: process.stdout.read(8192), b""):
                 yield chunk
         except GeneratorExit:
-            # Client disconnected
             process.kill()
             break
         except Exception:
-            # Stream error, will attempt restart
             pass
 
         # print("🔄 FFmpeg stopped, restarting stream...")
@@ -120,21 +118,20 @@ def generate_stream(url):
 
 # 🌍 API to stream a station
 @app.route("/stream/<station_name>")
-def stream_station(station_name): # Renamed to avoid conflict with the function name in the generator
+def stream_station(station_name): 
     url = RADIO_STATIONS.get(station_name)
     if not url:
         return "⚠️ Station not found", 404
     return Response(generate_stream(url), mimetype="audio/mpeg")
 
-# 📻 Keypad-friendly interface (Modified to include Copy URL)
+# 📻 Keypad-friendly interface with Copy URL option
 @app.route("/")
 def index():
     stations = list(RADIO_STATIONS.items())
     
-    # Base URL for the stream. We'll use this in JavaScript.
-    # We cannot use url_for('stream_station', station_name='X') here for all stations efficiently,
-    # so we pass the *base* stream route and the station data.
-    stream_base_url = url_for('stream_station', station_name='_STATION_PLACEHOLDER_', _external=True).replace('/_STATION_PLACEHOLDER_', '')
+    # 💡 FIX: Generate the base URL *up to* /stream/ and ensure it ends with a slash
+    # This results in: http://<host>:<port>/stream/
+    stream_base_url = url_for('stream_station', station_name='_DUMMY_', _external=True).replace('_DUMMY_', '')
 
     html = """
     <!DOCTYPE html>
@@ -150,7 +147,15 @@ def index():
             .active { background: green; color: black; }
             audio { width: 90%; margin-top: 10px; }
             .info { margin-top: 10px; font-size: 16px; }
-            .controls button { background: #333; color: white; border: none; padding: 5px 10px; margin: 5px; cursor: pointer; }
+            .controls button { 
+                background: #333; 
+                color: white; 
+                border: 1px solid lime; 
+                padding: 5px 10px; 
+                margin: 5px; 
+                cursor: pointer; 
+                font-family: monospace;
+            }
             .controls button:hover { background: #555; }
         </style>
     </head>
@@ -179,24 +184,27 @@ def index():
             const list = document.getElementById("list");
             const now = document.getElementById("nowPlaying");
             const copyBtn = document.getElementById("copyButton");
-            const streamBaseUrl = "{{ stream_base_url }}";
+            const streamBaseUrl = "{{ stream_base_url }}"; // e.g., http://<host>:8000/stream/
 
             function play(name){
                 current = stations.findIndex(s => s[0] === name);
                 const [station, url] = stations[current];
-                // Use the Flask endpoint /stream/<station_name> for the audio source
-                audio.src = streamBaseUrl + "/stream/" + station; 
+                
+                // Constructs the correct URL: /stream/muthnabi_radio
+                audio.src = streamBaseUrl + station; 
+                
                 now.textContent = "▶ " + station.replace(/_/g, " ").toUpperCase();
                 player.style.display = "block";
                 list.style.display = "none";
                 copyBtn.textContent = '🔗 Copy Stream URL'; // Reset button text
             }
 
-            // New function to copy the current stream URL
             function copyUrl(){
                 if(current === -1) return;
                 const stationName = stations[current][0];
-                const streamUrl = streamBaseUrl + "/stream/" + stationName;
+                
+                // Constructs the correct URL to be copied
+                const streamUrl = streamBaseUrl + stationName;
 
                 // Use the Clipboard API for modern browsers
                 if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -208,7 +216,7 @@ def index():
                         copyBtn.textContent = '❌ Failed to copy!';
                     });
                 } else {
-                    // Fallback for older browsers (less reliable/secure)
+                    // Fallback for older browsers 
                     const tempInput = document.createElement('input');
                     document.body.appendChild(tempInput);
                     tempInput.value = streamUrl;
@@ -248,4 +256,5 @@ def index():
     return render_template_string(html, stations=stations, stream_base_url=stream_base_url)
 
 if __name__ == "__main__":
+    # Note: For this application to stream, you must have FFmpeg installed and accessible in your system's PATH.
     app.run(host="0.0.0.0", port=8000, debug=True)
