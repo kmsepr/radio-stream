@@ -4,8 +4,6 @@ from flask import Flask, Response, render_template_string, request, url_for
 import sys
 
 # Check if we are running the Flask app directly
-# This section ensures the app can run even if the environment lacks a real 'subprocess'
-# or if it's imported for testing without the necessary libraries.
 if __name__ != "__main__":
     class MockProcess:
         def __init__(self): pass
@@ -24,7 +22,7 @@ if __name__ != "__main__":
 
 app = Flask(__name__)
 
-# 📡 List of radio stations
+# 📡 List of radio stations (kept for completeness)
 RADIO_STATIONS = {
     "muthnabi_radio": "http://cast4.my-control-panel.com/proxy/muthnabi/stream",
     "radio_nellikka": "https://usa20.fastcast4u.com:2130/stream",
@@ -89,17 +87,14 @@ def generate_stream(url):
         ]
         
         try:
-            # Note: subprocess must be a real module for this to work outside of the mock environment
             process = subprocess.Popen(
                 command,
                 stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=8192
             )
         except FileNotFoundError:
-            # print("⚠️ FFmpeg not found. Ensure it's installed and in your PATH.")
             time.sleep(5)
             continue
         except Exception:
-            # print(f"⚠️ Error starting FFmpeg process: {e}")
             time.sleep(5)
             continue
 
@@ -112,7 +107,6 @@ def generate_stream(url):
         except Exception:
             pass
 
-        # print("🔄 FFmpeg stopped, restarting stream...")
         time.sleep(3)
 
 
@@ -124,13 +118,12 @@ def stream_station(station_name):
         return "⚠️ Station not found", 404
     return Response(generate_stream(url), mimetype="audio/mpeg")
 
-# 📻 Keypad-friendly interface with Copy URL option
+# 📻 Keypad-friendly interface with Copy URL option and Play in List
 @app.route("/")
 def index():
     stations = list(RADIO_STATIONS.items())
     
-    # 💡 FIX: Generate the base URL *up to* /stream/ and ensure it ends with a slash
-    # This results in: http://<host>:<port>/stream/
+    # Base URL for streaming: http://<host>:<port>/stream/
     stream_base_url = url_for('stream_station', station_name='_DUMMY_', _external=True).replace('_DUMMY_', '')
 
     html = """
@@ -140,14 +133,66 @@ def index():
         <title>Keypad Radio</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
-            body { background: black; color: lime; font-family: monospace; text-align: center; }
+            body { 
+                background: black; 
+                color: lime; 
+                font-family: monospace; 
+                text-align: center; 
+                padding-bottom: 50px;
+            }
             h2 { font-size: 22px; margin: 10px; }
-            .station { padding: 10px; border-bottom: 1px solid #333; }
-            a { color: yellow; text-decoration: none; display: block; padding: 5px; }
-            .active { background: green; color: black; }
-            audio { width: 90%; margin-top: 10px; }
-            .info { margin-top: 10px; font-size: 16px; }
-            .controls button { 
+            .station { 
+                padding: 10px; 
+                border-bottom: 1px solid #333; 
+                display: flex;
+                justify-content: space-between; 
+                align-items: center;
+            }
+            .station-title {
+                color: yellow; 
+                text-decoration: none; 
+                padding: 5px;
+                flex-grow: 1; 
+                text-align: left;
+            }
+            .controls-group {
+                display: flex;
+                gap: 5px; /* Space between buttons */
+            }
+            .list-button {
+                border: 1px solid lime;
+                padding: 5px 10px;
+                cursor: pointer;
+                font-weight: bold;
+                text-decoration: none;
+                font-family: monospace;
+            }
+            .play-button {
+                background: green;
+                color: black;
+            }
+            .copy-button {
+                background: #333;
+                color: white;
+            }
+            .play-button:hover { background: #00ff00; }
+            .copy-button:hover { background: #555; }
+            
+            /* Player styles - make it fixed at the bottom */
+            #player {
+                position: fixed; 
+                bottom: 0; 
+                left: 0; 
+                width: 100%;
+                background: #1a1a1a; 
+                border-top: 2px solid lime;
+                padding: 10px 0;
+                box-sizing: border-box;
+                z-index: 1000;
+            }
+            audio { width: 90%; margin-top: 5px; }
+            .info { margin-top: 5px; font-size: 16px; }
+            .player-controls button { 
                 background: #333; 
                 color: white; 
                 border: 1px solid lime; 
@@ -156,64 +201,63 @@ def index():
                 cursor: pointer; 
                 font-family: monospace;
             }
-            .controls button:hover { background: #555; }
+            .player-controls button:hover { background: #555; }
         </style>
     </head>
     <body>
-        <h2>🎧 Radio Player</h2>
+        <h2>🎧 Radio Stations</h2>
         <div id="list">
             {% for name, url in stations %}
                 <div class="station">
-                    <a href="#" onclick="play('{{name}}')">{{ loop.index }}. {{ name.replace('_',' ').title() }}</a>
+                    <span class="station-title">{{ loop.index }}. {{ name.replace('_',' ').title() }}</span>
+                    <div class="controls-group">
+                        <a href="#" onclick="copyUrlFromList('{{name}}', this)" class="list-button copy-button" id="copy-{{name}}">🔗 URL</a>
+                        <a href="#" onclick="play('{{name}}')" class="list-button play-button">▶ PLAY</a>
+                    </div>
                 </div>
             {% endfor %}
         </div>
+        
         <div id="player" style="display:none;">
             <div class="info" id="nowPlaying"></div>
             <audio id="audio" controls autoplay></audio>
-            <div class="controls">
-                <button onclick="copyUrl()" id="copyButton">🔗 Copy Stream URL</button>
+            <div class="player-controls">
+                <div class="info">Press 2=Prev 5=Play/Pause 8=Next 0=Back</div>
             </div>
-            <div class="info">Press 2=Prev 5=Play/Pause 8=Next 0=Back</div>
         </div>
+        
         <script>
             const stations = {{ stations|tojson }};
             let current = -1;
             const audio = document.getElementById("audio");
             const player = document.getElementById("player");
-            const list = document.getElementById("list");
             const now = document.getElementById("nowPlaying");
-            const copyBtn = document.getElementById("copyButton");
-            const streamBaseUrl = "{{ stream_base_url }}"; // e.g., http://<host>:8000/stream/
+            const streamBaseUrl = "{{ stream_base_url }}"; 
 
+            // Function to handle play action
             function play(name){
                 current = stations.findIndex(s => s[0] === name);
                 const [station, url] = stations[current];
                 
-                // Constructs the correct URL: /stream/muthnabi_radio
                 audio.src = streamBaseUrl + station; 
+                audio.play(); 
                 
                 now.textContent = "▶ " + station.replace(/_/g, " ").toUpperCase();
                 player.style.display = "block";
-                list.style.display = "none";
-                copyBtn.textContent = '🔗 Copy Stream URL'; // Reset button text
             }
-
-            function copyUrl(){
-                if(current === -1) return;
-                const stationName = stations[current][0];
-                
-                // Constructs the correct URL to be copied
+            
+            // Function to copy URL from the list view
+            function copyUrlFromList(stationName, buttonElement){
                 const streamUrl = streamBaseUrl + stationName;
 
-                // Use the Clipboard API for modern browsers
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(streamUrl).then(() => {
-                        copyBtn.textContent = '✅ Copied!';
-                        setTimeout(() => copyBtn.textContent = '🔗 Copy Stream URL', 3000);
+                        const originalText = buttonElement.textContent;
+                        buttonElement.textContent = '✅ Copied!';
+                        setTimeout(() => buttonElement.textContent = originalText, 3000);
                     }).catch(err => {
-                        console.error('Could not copy text: ', err);
-                        copyBtn.textContent = '❌ Failed to copy!';
+                        buttonElement.textContent = '❌ Failed!';
+                        setTimeout(() => buttonElement.textContent = '🔗 URL', 3000);
                     });
                 } else {
                     // Fallback for older browsers 
@@ -223,10 +267,13 @@ def index():
                     tempInput.select();
                     document.execCommand('copy');
                     document.body.removeChild(tempInput);
-                    copyBtn.textContent = '✅ Copied (Fallback)!';
-                    setTimeout(() => copyBtn.textContent = '🔗 Copy Stream URL', 3000);
+                    
+                    const originalText = buttonElement.textContent;
+                    buttonElement.textContent = '✅ Copied!';
+                    setTimeout(() => buttonElement.textContent = originalText, 3000);
                 }
             }
+
 
             function prev(){
                 if(current > 0){ play(stations[current-1][0]); }
@@ -235,19 +282,21 @@ def index():
                 if(current < stations.length-1){ play(stations[current+1][0]); }
             }
             function back(){
-                player.style.display = "none";
-                list.style.display = "block";
+                player.style.display = "none"; 
                 audio.pause();
+                current = -1;
             }
 
             document.addEventListener("keydown", e=>{
                 const k = e.key;
-                if(k === "2") prev();
-                else if(k === "8") next();
-                else if(k === "5"){
-                    if(audio.paused) audio.play(); else audio.pause();
+                if(player.style.display === "block") { // Only process keypad commands if player is visible
+                    if(k === "2") prev();
+                    else if(k === "8") next();
+                    else if(k === "5"){
+                        if(audio.paused) audio.play(); else audio.pause();
+                    }
+                    else if(k === "0") back();
                 }
-                else if(k === "0") back();
             });
         </script>
     </body>
@@ -256,5 +305,4 @@ def index():
     return render_template_string(html, stations=stations, stream_base_url=stream_base_url)
 
 if __name__ == "__main__":
-    # Note: For this application to stream, you must have FFmpeg installed and accessible in your system's PATH.
     app.run(host="0.0.0.0", port=8000, debug=True)
