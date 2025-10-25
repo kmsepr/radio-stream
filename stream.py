@@ -4,6 +4,7 @@ from flask import Flask, Response, render_template_string, request
 
 app = Flask(__name__)
 
+
 # 📡 List of radio stations
 RADIO_STATIONS = {
     "muthnabi_radio": "http://cast4.my-control-panel.com/proxy/muthnabi/stream",
@@ -57,6 +58,121 @@ RADIO_STATIONS = {
     "rubat_ataq": "http://stream.zeno.fm/5tpfc8d7xqruv",
     "al_jazeera": "http://live-hls-audio-web-aja.getaj.net/VOICE-AJA/index.m3u8",
 }
+
+# 🔄 FFmpeg audio proxy
+def generate_stream(url):
+    process = None
+    while True:
+        if process:
+            process.kill()
+
+        process = subprocess.Popen(
+            [
+                "ffmpeg", "-reconnect", "1", "-reconnect_streamed", "1",
+                "-reconnect_delay_max", "10", "-fflags", "nobuffer",
+                "-i", url, "-vn", "-ac", "1", "-b:a", "24k", "-f", "mp3", "-"
+            ],
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=8192
+        )
+
+        try:
+            for chunk in iter(lambda: process.stdout.read(8192), b""):
+                yield chunk
+        except GeneratorExit:
+            process.kill()
+            break
+        except Exception:
+            pass
+
+        time.sleep(3)
+
+@app.route("/<station>")
+def stream(station):
+    url = RADIO_STATIONS.get(station)
+    if not url:
+        return "Station not found", 404
+    return Response(generate_stream(url), mimetype="audio/mpeg")
+
+# 📻 Keypad-friendly interface
+@app.route("/")
+def index():
+    stations = list(RADIO_STATIONS.items())
+    html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Keypad Radio</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body { background: black; color: lime; font-family: monospace; text-align: center; }
+            h2 { font-size: 22px; margin: 10px; }
+            .station { padding: 10px; border-bottom: 1px solid #333; }
+            a { color: yellow; text-decoration: none; display: block; padding: 5px; }
+            .active { background: green; color: black; }
+            audio { width: 90%; margin-top: 10px; }
+            .info { margin-top: 10px; font-size: 16px; }
+        </style>
+    </head>
+    <body>
+        <h2>🎧 Radio Player</h2>
+        <div id="list">
+            {% for name, url in stations %}
+                <div class="station">
+                    <a href="#" onclick="play('{{name}}')">{{ loop.index }}. {{ name.replace('_',' ').title() }}</a>
+                </div>
+            {% endfor %}
+        </div>
+        <div id="player" style="display:none;">
+            <div class="info" id="nowPlaying"></div>
+            <audio id="audio" controls autoplay></audio>
+            <div class="info">Press 2=Prev 5=Play/Pause 8=Next 0=Back</div>
+        </div>
+        <script>
+            const stations = {{ stations|tojson }};
+            let current = -1;
+            const audio = document.getElementById("audio");
+            const player = document.getElementById("player");
+            const list = document.getElementById("list");
+            const now = document.getElementById("nowPlaying");
+
+            function play(name){
+                current = stations.findIndex(s => s[0] === name);
+                const [station, url] = stations[current];
+                audio.src = "/" + station;
+                now.textContent = "▶ " + station.replace(/_/g, " ").toUpperCase();
+                player.style.display = "block";
+                list.style.display = "none";
+            }
+
+            function prev(){
+                if(current > 0){ play(stations[current-1][0]); }
+            }
+            function next(){
+                if(current < stations.length-1){ play(stations[current+1][0]); }
+            }
+            function back(){
+                player.style.display = "none";
+                list.style.display = "block";
+                audio.pause();
+            }
+
+            document.addEventListener("keydown", e=>{
+                const k = e.key;
+                if(k === "2") prev();
+                else if(k === "8") next();
+                else if(k === "5"){
+                    if(audio.paused) audio.play(); else audio.pause();
+                }
+                else if(k === "0") back();
+            });
+        </script>
+    </body>
+    </html>
+    """
+    return render_template_string(html, stations=stations)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=8000)
 
 # 🔄 Streaming function
 def generate_stream(url):
