@@ -70,6 +70,7 @@ RADIO_STATIONS = {
     "sanaa_radio": "http://dc5.serverse.com/proxy/pbmhbvxs/stream",
     "rubat_ataq": "http://stream.zeno.fm/5tpfc8d7xqruv",
     "al_jazeera": "http://live-hls-audio-web-aja.getaj.net/VOICE-AJA/index.m3u8",
+    "oman_radio": "https://partwota.cdn.mgmlcdn.com/omanrdoorg/omanrdo.stream_aac/chunklist.m3u8",
 }
 
 # 🔄 FFmpeg audio proxy
