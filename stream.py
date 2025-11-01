@@ -83,7 +83,7 @@ def generate_stream(url):
         command = [
             "ffmpeg", "-reconnect", "1", "-reconnect_streamed", "1",
             "-reconnect_delay_max", "10", "-fflags", "nobuffer", "-flags", "low_delay",
-            "-i", url, "-vn", "-ac", "1", "-b:a", "24k", "-buffer_size", "1024k", "-f", "mp3", "-"
+            "-i", url, "-vn", "-ac", "1", "-b:a", "64k", "-buffer_size", "1024k", "-f", "mp3", "-"
         ]
         
         try:
