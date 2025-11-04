@@ -122,15 +122,13 @@ def stream_station(station_name):
 @app.route("/")
 def index():
     stations = list(RADIO_STATIONS.items())
-    
-    # Base URL for streaming: http://<host>:<port>/stream/
     stream_base_url = url_for('stream_station', station_name='_DUMMY_', _external=True).replace('_DUMMY_', '')
 
     html = """
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Keypad Radio</title>
+        <title>📻 Keypad Radio</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
             body { 
@@ -138,117 +136,106 @@ def index():
                 color: lime; 
                 font-family: monospace; 
                 text-align: center; 
-                padding: 10px;
-                /* 🚨 FIX: Increased padding to ensure all grid cards are visible above fixed player */
-                padding-bottom: 180px; 
+                margin: 0; 
+                padding: 5px;
+                padding-bottom: 130px; /* Space for fixed player */
             }
             h2 { 
-                font-size: 24px; 
-                margin: 15px 0 25px 0; 
+                font-size: 18px; 
+                margin: 10px 0 15px; 
                 color: #00ff00; 
             }
-            
-            /* 🚀 GRID CONTAINER STYLES */
+
+            /* Compact grid */
             #list {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 20px;
-                padding: 0;
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 8px;
                 list-style: none;
+                padding: 0;
+                margin: 0;
             }
-            
-            /* 💳 CARD STYLES */
+
+            /* Small compact cards */
             .station { 
-                background: #1a1a1a;
+                background: #111;
                 color: yellow;
-                padding: 15px; 
-                border: 1px solid lime; 
-                border-radius: 8px;
-                box-shadow: 0 4px 10px rgba(0, 255, 0, 0.2);
-                
+                padding: 8px;
+                border: 1px solid #0f0; 
+                border-radius: 6px;
+                min-height: 70px;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-                align-items: flex-start;
-                min-height: 120px;
+                align-items: stretch;
             }
+
             .station-title {
                 color: yellow; 
-                font-size: 18px;
+                font-size: 13px;
                 font-weight: bold;
+                margin-bottom: 5px;
                 text-align: left;
-                margin-bottom: 10px;
+                line-height: 1.2;
             }
-            
-            /* BUTTON GROUP STYLES - List View */
+
+            /* Button group */
             .controls-group {
                 display: flex;
-                justify-content: flex-start;
-                width: 100%;
-                gap: 10px;
+                justify-content: space-between;
+                gap: 5px;
             }
+
             .list-button {
                 flex-grow: 1;
-                text-align: center;
+                font-size: 12px;
+                padding: 5px;
+                text-decoration: none;
                 border: 1px solid lime;
-                padding: 8px 10px;
+                border-radius: 4px;
                 cursor: pointer;
                 font-weight: bold;
-                text-decoration: none;
-                font-family: monospace;
-                border-radius: 4px;
-                max-width: 100%;
+                background: #003300;
+                color: #fff;
             }
-            .play-button {
-                background: #008000;
-                color: white;
-            }
-            .play-button:hover { background: #00ff00; color: black; }
-            
-            /* PLAYER STYLES (Fixed at bottom) */
+            .list-button:hover { background: #00ff00; color: black; }
+
+            /* Fixed mini-player */
             #player {
                 position: fixed; 
                 bottom: 0; 
                 left: 0; 
                 width: 100%;
-                background: #1a1a1a; 
+                background: #111; 
                 border-top: 2px solid lime;
-                padding: 10px 0;
-                box-sizing: border-box;
+                padding: 6px 0;
                 z-index: 1000;
             }
-            audio { width: 90%; margin-top: 5px; }
-            .info { margin-top: 5px; font-size: 16px; }
-            
-            /* PLAYER CONTROLS STYLES */
+
+            audio { width: 90%; height: 25px; }
+
+            .info { 
+                font-size: 12px; 
+                color: #0f0;
+                margin: 3px 0;
+            }
+
             .player-controls {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                gap: 15px;
-                margin-top: 5px;
+                gap: 10px;
             }
             .player-controls button { 
-                background: #333; 
-                color: white; 
+                background: #222; 
+                color: #fff; 
                 border: 1px solid lime; 
-                padding: 5px 10px; 
-                cursor: pointer; 
-                font-family: monospace;
-                border-radius: 4px;
+                padding: 3px 6px; 
+                font-size: 12px;
+                border-radius: 3px;
+                cursor: pointer;
             }
-            .player-controls button:hover { background: #555; }
-            
-            /* Style for the Copy URL button in the player */
-            #playerCopyButton {
-                background: #555;
-                color: white;
-                border: 1px solid white;
-            }
-            #playerCopyButton:hover {
-                background: #777;
-            }
-            
+            .player-controls button:hover { background: #444; }
         </style>
     </head>
     <body>
@@ -256,100 +243,63 @@ def index():
         <div id="list">
             {% for name, url in stations %}
                 <div class="station">
-                    <span class="station-title">{{ loop.index }}. {{ name.replace('_',' ').title() }}</span>
-                    
+                    <div class="station-title">{{ loop.index }}. {{ name.replace('_',' ').title() }}</div>
                     <div class="controls-group">
-                        <a href="#" onclick="play('{{name}}')" class="list-button play-button">▶ PLAY</a>
+                        <a href="#" onclick="play('{{name}}')" class="list-button">▶ Play</a>
                     </div>
                 </div>
             {% endfor %}
         </div>
-        
+
         <div id="player" style="display:none;">
             <div class="info" id="nowPlaying"></div>
             <audio id="audio" controls autoplay></audio>
-            
             <div class="player-controls">
-                <button onclick="copyUrl()" id="playerCopyButton">🔗 Copy Current URL</button>
+                <button onclick="copyUrl()" id="playerCopyButton">🔗 Copy</button>
             </div>
-
-            <div class="info">Press 2=Prev 5=Play/Pause 8=Next 0=Back</div>
+            <div class="info">2=Prev 5=Play/Pause 8=Next 0=Back</div>
         </div>
-        
+
         <script>
             const stations = {{ stations|tojson }};
             let current = -1;
             const audio = document.getElementById("audio");
             const player = document.getElementById("player");
             const now = document.getElementById("nowPlaying");
-            const streamBaseUrl = "{{ stream_base_url }}"; 
+            const streamBaseUrl = "{{ stream_base_url }}";
             const playerCopyBtn = document.getElementById("playerCopyButton");
 
-            // Function to handle play action
             function play(name){
                 current = stations.findIndex(s => s[0] === name);
                 const [station, url] = stations[current];
-                
                 audio.src = streamBaseUrl + station; 
                 audio.play(); 
-                
                 now.textContent = "▶ " + station.replace(/_/g, " ").toUpperCase();
                 player.style.display = "block";
-                playerCopyBtn.textContent = '🔗 Copy Current URL'; // Reset button text
-                
-                window.scrollTo(0, document.body.scrollHeight); 
+                playerCopyBtn.textContent = '🔗 Copy';
+                window.scrollTo(0, document.body.scrollHeight);
             }
-            
-            // Function to copy URL from the mini-player (uses current station)
+
             function copyUrl(){
                 if(current === -1) return;
                 const stationName = stations[current][0];
                 const streamUrl = streamBaseUrl + stationName;
+                navigator.clipboard?.writeText(streamUrl);
+                playerCopyBtn.textContent = '✅ Copied!';
+                setTimeout(() => playerCopyBtn.textContent = '🔗 Copy', 2000);
+            }
 
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(streamUrl).then(() => {
-                        playerCopyBtn.textContent = '✅ Copied!';
-                        setTimeout(() => playerCopyBtn.textContent = '🔗 Copy Current URL', 3000);
-                    }).catch(err => {
-                        playerCopyBtn.textContent = '❌ Failed!';
-                        setTimeout(() => playerCopyBtn.textContent = '🔗 Copy Current URL', 3000);
-                    });
-                } else {
-                    // Fallback for older browsers 
-                    const tempInput = document.createElement('input');
-                    document.body.appendChild(tempInput);
-                    tempInput.value = streamUrl;
-                    tempInput.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(tempInput);
-                    
-                    playerCopyBtn.textContent = '✅ Copied!';
-                    setTimeout(() => playerCopyBtn.textContent = '🔗 Copy Current URL', 3000);
-                }
-            }
-            
-            // Player Navigation/Control functions
-            function prev(){
-                if(current > 0){ play(stations[current-1][0]); }
-            }
-            function next(){
-                if(current < stations.length-1){ play(stations[current+1][0]); }
-            }
-            function back(){
-                player.style.display = "none"; 
-                audio.pause();
-                current = -1;
-            }
+            function prev(){ if(current > 0) play(stations[current-1][0]); }
+            function next(){ if(current < stations.length-1) play(stations[current+1][0]); }
+            function back(){ player.style.display = "none"; audio.pause(); current = -1; }
 
             document.addEventListener("keydown", e=>{
                 const k = e.key;
-                if(player.style.display === "block") { // Only process keypad commands if player is visible
-                    if(k === "2") prev();
-                    else if(k === "8") next();
-                    else if(k === "5"){
-                        if(audio.paused) audio.play(); else audio.pause();
-                    }
-                    else if(k === "0") back();
+                if(player.style.display === "block"){
+                    if(k==="2") prev();
+                    else if(k==="8") next();
+                    else if(k==="5") (audio.paused?audio.play():audio.pause());
+                    else if(k==="0") back();
                 }
             });
         </script>
