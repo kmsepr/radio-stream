@@ -82,10 +82,20 @@ def generate_stream(url):
             process.kill() 
 
         command = [
-            "ffmpeg", "-reconnect", "1", "-reconnect_streamed", "1",
-            "-reconnect_delay_max", "10", "-fflags", "nobuffer", "-flags", "low_delay",
-            "-i", url, "-vn", "-ac", "1", "-b:a", "40k", "-buffer_size", "1024k", "-f", "mp3", "-"
-        ]
+    "ffmpeg",
+    "-i", url,
+    "-vn",
+    "-acodec", "libmp3lame",
+    "-ar", "44100",
+    "-ac", "2",
+    "-b:a", "64k",
+    "-bufsize", "64k",
+    "-reconnect", "1",
+    "-reconnect_streamed", "1",
+    "-reconnect_delay_max", "2",
+    "-f", "mp3",
+    "-"
+]
         
         try:
             process = subprocess.Popen(
