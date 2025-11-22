@@ -88,7 +88,7 @@ def generate_stream(url):
     "-acodec", "libmp3lame",
     "-ar", "44100",
     "-ac", "2",
-    "-b:a", "128k",
+    "-b:a", "64k",
     "-bufsize", "1024k",
     "-reconnect", "1",
     "-reconnect_streamed", "1",
