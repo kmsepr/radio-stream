@@ -75,8 +75,7 @@ RADIO_STATIONS = {
 }
 
 # 🔄 FFmpeg audio proxy
-
-   def generate_stream(url):
+def generate_stream(url):
     command = [
         "ffmpeg",
         "-reconnect", "1",
