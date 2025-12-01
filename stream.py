@@ -75,50 +75,45 @@ RADIO_STATIONS = {
 }
 
 # 🔄 FFmpeg audio proxy
-def generate_stream(url):
-    process = None
-    while True:
-        if process:
-            process.kill() 
 
-        command = [
-    "ffmpeg",
-    "-i", url,
-    "-vn",
-    "-acodec", "libmp3lame",
-    "-ar", "44100",
-    "-ac", "2",
-    "-b:a", "40k",
-    "-bufsize", "1024k",
-    "-reconnect", "1",
-    "-reconnect_streamed", "1",
-    "-reconnect_delay_max", "2",
-    "-f", "mp3",
-    "-"
-]
-        
+   def generate_stream(url):
+    command = [
+        "ffmpeg",
+        "-reconnect", "1",
+        "-reconnect_streamed", "1",
+        "-reconnect_delay_max", "5",
+        "-i", url,
+        "-vn",
+        "-acodec", "libmp3lame",
+        "-ar", "44100",
+        "-ac", "2",
+        "-b:a", "40k",
+        "-bufsize", "2048k",
+        "-f", "mp3",
+        "-"
+    ]
+
+    while True:
         try:
             process = subprocess.Popen(
                 command,
-                stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, bufsize=8192
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                bufsize=16384
             )
-        except FileNotFoundError:
-            time.sleep(5)
-            continue
-        except Exception:
-            time.sleep(5)
-            continue
 
-        try:
-            for chunk in iter(lambda: process.stdout.read(8192), b""):
+            # Read until FFmpeg dies
+            while True:
+                chunk = process.stdout.read(16384)
+                if not chunk:
+                    break
                 yield chunk
-        except GeneratorExit:
-            process.kill()
-            break
+
         except Exception:
             pass
 
-        time.sleep(3)
+        # Wait before reconnecting
+        time.sleep(1)
 
 
 # 🌍 API to stream a station
