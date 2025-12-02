@@ -82,7 +82,8 @@ def generate_stream(url):
     "-reconnect_streamed", "1",
     "-reconnect_delay_max", "5",
 
-    # NEW LINES TO PREVENT REPEAT
+    "-ignore_length", "1",
+    "-hls_flags", "delete_segments+append_list+live_start_index",
     "-live_start_index", "-1",
     "-start_at_zero", "0",
 
@@ -96,6 +97,7 @@ def generate_stream(url):
     "-f", "mp3",
     "-"
 ]
+
 
     while True:
         try:
