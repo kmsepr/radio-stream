@@ -77,20 +77,25 @@ RADIO_STATIONS = {
 # 🔄 FFmpeg audio proxy
 def generate_stream(url):
     command = [
-        "ffmpeg",
-        "-reconnect", "1",
-        "-reconnect_streamed", "1",
-        "-reconnect_delay_max", "5",
-        "-i", url,
-        "-vn",
-        "-acodec", "libmp3lame",
-        "-ar", "44100",
-        "-ac", "2",
-        "-b:a", "40k",
-        "-bufsize", "2048k",
-        "-f", "mp3",
-        "-"
-    ]
+    "ffmpeg",
+    "-reconnect", "1",
+    "-reconnect_streamed", "1",
+    "-reconnect_delay_max", "5",
+
+    # NEW LINES TO PREVENT REPEAT
+    "-live_start_index", "-1",
+    "-start_at_zero", "0",
+
+    "-i", url,
+    "-vn",
+    "-acodec", "libmp3lame",
+    "-ar", "44100",
+    "-ac", "2",
+    "-b:a", "40k",
+    "-bufsize", "2048k",
+    "-f", "mp3",
+    "-"
+]
 
     while True:
         try:
