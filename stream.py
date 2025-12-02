@@ -80,23 +80,14 @@ def generate_stream(url):
     "ffmpeg",
     "-reconnect", "1",
     "-reconnect_streamed", "1",
-    "-reconnect_delay_max", "5",
-
-    "-ignore_length", "1",
-    "-hls_flags", "delete_segments+append_list+live_start_index",
-    "-live_start_index", "-1",
-    "-start_at_zero", "0",
-
+    "-reconnect_delay_max", "10",
     "-i", url,
     "-vn",
-    "-acodec", "libmp3lame",
-    "-ar", "44100",
-    "-ac", "2",
+    "-ac", "1",
     "-b:a", "40k",
-    "-bufsize", "2048k",
     "-f", "mp3",
     "-"
-]
+],
 
 
     while True:
