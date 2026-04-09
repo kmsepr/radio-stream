@@ -46,6 +46,8 @@ RADIO_STATIONS = {
 
 "media_one": "https://cdn-3.pishow.tv/live/1481/master.m3u8",
 
+"manorama_news": "https://mmtvnews1.akamaized.net/v1/master/673630b269b766886555eebfddd4f27f3de3ab50/mmtvNewsCampaign1/index.m3u8",
+
 
 
     "malayalam_1": "http://167.114.131.90:5412/stream",
