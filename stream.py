@@ -93,21 +93,46 @@ RADIO_STATIONS = {
 
 # 🔄 FFmpeg audio proxy
 def generate_stream(url):
-    command = [
-        "ffmpeg",
-        "-reconnect", "1",
-        "-reconnect_streamed", "1",
-        "-reconnect_delay_max", "10",
-        "-i", url,
-        "-vn",
-        "-ac", "1",
-        "-b:a", "40k",
-        "-f", "mp3",
-        "-"
-    ]
+
+    def build_command(is_amagi):
+        base = [
+            "ffmpeg",
+            "-reconnect", "1",
+            "-reconnect_streamed", "1",
+            "-reconnect_delay_max", "10",
+        ]
+
+        # ✅ Apply ONLY for Asianet / Amagi
+        if is_amagi:
+            base += [
+                "-user_agent", "Mozilla/5.0",
+                "-headers", "Referer: https://www.google.com\r\n",
+                "-protocol_whitelist", "file,http,https,tcp,tls",
+            ]
+
+        base += ["-i", url]
+
+        # ✅ Only force audio map for Amagi
+        if is_amagi:
+            base += ["-map", "a:0"]
+
+        base += [
+            "-vn",
+            "-ac", "1",
+            "-b:a", "40k",
+            "-f", "mp3",
+            "-"
+        ]
+
+        return base
+
+    # 🔍 Detect Amagi / Asianet
+    is_amagi = "amagi.tv" in url
 
     while True:
         try:
+            command = build_command(is_amagi)
+
             process = subprocess.Popen(
                 command,
                 stdout=subprocess.PIPE,
@@ -115,16 +140,39 @@ def generate_stream(url):
                 bufsize=16384
             )
 
+            got_data = False
+
             while True:
                 chunk = process.stdout.read(16384)
                 if not chunk:
                     break
+                got_data = True
                 yield chunk
+
+            # 🔁 Fallback ONLY for Amagi if no audio
+            if is_amagi and not got_data:
+                print("⚠️ Asianet fallback retry...")
+
+                fallback_cmd = build_command(False)  # remove special flags
+
+                process = subprocess.Popen(
+                    fallback_cmd,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.DEVNULL,
+                    bufsize=16384
+                )
+
+                while True:
+                    chunk = process.stdout.read(16384)
+                    if not chunk:
+                        break
+                    yield chunk
 
         except Exception as e:
             print("FFmpeg error:", e)
 
         time.sleep(1)
+
 
 
 # 🌍 API to stream a station
