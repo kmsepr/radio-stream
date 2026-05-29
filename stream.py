@@ -89,6 +89,8 @@ RADIO_STATIONS = {
     "al_jazeera": "http://live-hls-audio-web-aja.getaj.net/VOICE-AJA/index.m3u8",
     "oman_radio": "https://partwota.cdn.mgmlcdn.com/omanrdoorg/omanrdo.stream_aac/chunklist.m3u8",
 "radio_jornal": "https://player-ne10-radiojornal-app.stream.uol.com.br/live/radiojornalrecifeapp.m3u8",
+
+"arabic": "https://live.arabicradio.net/hls/arabic.m3u8",
 }
 
 # 🔄 FFmpeg audio proxy
