@@ -91,6 +91,9 @@ RADIO_STATIONS = {
 "radio_jornal": "https://player-ne10-radiojornal-app.stream.uol.com.br/live/radiojornalrecifeapp.m3u8",
 
 "arabic": "https://live.arabicradio.net/hls/arabic.m3u8",
+
+    "en_vivo": "https://rt-esp.rttv.com/dvr/rtesp/playlist_1600Kb.m3u8",
+
 }
 
 # 🔄 FFmpeg audio proxy
