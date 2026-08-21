@@ -1102,6 +1102,7 @@ function switchTab(tabKey){
   currentTab = tabKey;
   
   const buttons = document.querySelectorAll('.tabsContainer .tabBtn');
+  buttons.buttons = buttons || [];
   buttons.forEach(btn => btn.classList.remove('active'));
   
   if(tabKey === 'daily'){
@@ -1536,32 +1537,19 @@ def quiz_tests():
             test["questionCount"] = question_counts.get(test["id"], 0)
 
         def safe_sort_key(t):
-            title_str = str(t.get("title") or "").lower()
-            months = {"jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6, 
-                      "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12}
+            # Fallback sort based strictly on any number extracted from the document ID or title
+            title_str = str(t.get("title") or "")
+            test_id = str(t.get("id") or "")
             
-            match = re.search(r'(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s*(\d+)', title_str)
-            if match:
-                month_num = months.get(match.group(1)[:3], 8)
-                day_num = int(match.group(2))
-                year_match = re.search(r'(20\d{2})', title_str)
-                year_num = int(year_match.group(1)) if year_match else 2026
-                return year_num * 10000 + month_num * 100 + day_num
-            
-            val = t.get("dateMillis")
-            try:
-                if val is not None:
-                    return int(val)
-            except (ValueError, TypeError):
-                pass
-            
-            match_num = re.search(r'\d+', title_str)
-            if match_num:
-                return int(match_num.group())
+            # Extract all digits from title or ID to find the day number
+            numbers = re.findall(r'\d+', title_str + " " + test_id)
+            if numbers:
+                # Return the largest or most specific number (usually the day/date)
+                return int(numbers[-1])
             return 0
 
-        # Sort strictly in ascending chronological order (Aug 4 -> Aug 5 -> Aug 6)
-        tests.sort(key=safe_sort_key, reverse=False)
+        # Sort in reverse order so Aug 6 comes above Aug 5 and Aug 4
+        tests.sort(key=safe_sort_key, reverse=True)
 
         return jsonify(tests)
     except Exception as e:
