@@ -1536,23 +1536,31 @@ def quiz_tests():
             test["questionCount"] = question_counts.get(test["id"], 0)
 
         def safe_sort_key(t):
-            # Parse date or title numbers for correct chronological sorting (Aug 4, Aug 5, Aug 6...)
-            title_str = str(t.get("title") or "")
-            match = re.search(r'Aug\s+(\d+)', title_str, re.IGNORECASE)
+            title_str = str(t.get("title") or "").lower()
+            months = {"jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6, 
+                      "jul": 7, "aug": 8, "sep": 9, "oct": 10, "nov": 11, "dec": 12}
+            
+            match = re.search(r'(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\s*(\d+)', title_str)
             if match:
-                return int(match.group(1))
+                month_num = months.get(match.group(1)[:3], 8)
+                day_num = int(match.group(2))
+                year_match = re.search(r'(20\d{2})', title_str)
+                year_num = int(year_match.group(1)) if year_match else 2026
+                return year_num * 10000 + month_num * 100 + day_num
+            
             val = t.get("dateMillis")
             try:
                 if val is not None:
                     return int(val)
             except (ValueError, TypeError):
                 pass
+            
             match_num = re.search(r'\d+', title_str)
             if match_num:
                 return int(match_num.group())
             return 0
 
-        # Sort in ascending chronological order (Aug 4 -> Aug 5 -> Aug 6)
+        # Sort strictly in ascending chronological order (Aug 4 -> Aug 5 -> Aug 6)
         tests.sort(key=safe_sort_key, reverse=False)
 
         return jsonify(tests)
