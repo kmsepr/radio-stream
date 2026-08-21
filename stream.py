@@ -1102,7 +1102,6 @@ function switchTab(tabKey){
   currentTab = tabKey;
   
   const buttons = document.querySelectorAll('.tabsContainer .tabBtn');
-  buttons.buttons = buttons || [];
   buttons.forEach(btn => btn.classList.remove('active'));
   
   if(tabKey === 'daily'){
@@ -1517,6 +1516,7 @@ def quiz_tests():
         tests = []
         for doc in db.collection("custom_tests").stream():
             data = doc.to_dict()
+            # If timestamp field in Firestore is used, we can read it directly
             tests.append({
                 "id": data.get("id") or doc.id,
                 "topicId": data.get("topicId") or "",
@@ -1524,7 +1524,7 @@ def quiz_tests():
                 "subtitle": data.get("subtitle") or "",
                 "durationMinutes": data.get("durationMinutes") or 0,
                 "difficulty": data.get("difficulty") or "",
-                "dateMillis": data.get("dateMillis"),
+                "dateMillis": data.get("dateMillis") or data.get("timestamp") or 0,
                 "questionCount": 0,
             })
         question_counts = {}
@@ -1536,20 +1536,9 @@ def quiz_tests():
         for test in tests:
             test["questionCount"] = question_counts.get(test["id"], 0)
 
-        def safe_sort_key(t):
-            # Fallback sort based strictly on any number extracted from the document ID or title
-            title_str = str(t.get("title") or "")
-            test_id = str(t.get("id") or "")
-            
-            # Extract all digits from title or ID to find the day number
-            numbers = re.findall(r'\d+', title_str + " " + test_id)
-            if numbers:
-                # Return the largest or most specific number (usually the day/date)
-                return int(numbers[-1])
-            return 0
-
-        # Sort in reverse order so Aug 6 comes above Aug 5 and Aug 4
-        tests.sort(key=safe_sort_key, reverse=True)
+        # Sort strictly using the numeric value of timestamp (or dateMillis) in ascending order:
+        # Aug 4 (1786962194141) -> Aug 5 (1786962194268) -> Aug 6 (1786962194440)
+        tests.sort(key=lambda t: int(t.get("dateMillis") or 0), reverse=False)
 
         return jsonify(tests)
     except Exception as e:
