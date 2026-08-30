@@ -4,7 +4,6 @@ import json
 import urllib.request
 import threading
 import re
-import os
 import sys
 from flask import Flask, Response, render_template_string, request, url_for
 
@@ -28,7 +27,7 @@ app = Flask(__name__)
 
 # 📡 Categorized Radio & TV Stations
 STATION_CATEGORIES = {
-    # 1. AIR Section (Populated dynamically from GitHub on startup)
+    # AIR Section (Will be populated with all stations from GitHub)
     "air": {
         "air_calicut": {"title": "Akashvani Kozhikode (AIR Calicut)", "url": "https://d3hrxqn1tritdh.cloudfront.net/8321393de70015fc/8321393de70015fc.m3u8"},
         "manjeri_fm": {"title": "AIR Manjeri FM", "url": "https://d3hrxqn1tritdh.cloudfront.net/58390a2ed33cea4a/58390a2ed33cea4a.m3u8"},
@@ -36,7 +35,7 @@ STATION_CATEGORIES = {
         "real_fm": {"title": "Real FM Kozhikode", "url": "http://air.pc.cdn.bitgravity.com/air/live/pbaudio083/playlist.m3u8"},
         "fm_gold": {"title": "FM Gold Delhi", "url": "https://airhlspush.pc.cdn.bitgravity.com/httppush/hispbaudio005/hispbaudio00564kbps.m3u8"},
     },
-    # 2. TV Streams Section
+    # TV Streams Section
     "tv": {
         "safari_tv": {"title": "Safari TV", "url": "https://j78dp346yq5r-hls-live.5centscdn.com/safari/live.stream/chunks.m3u8"},
         "victers_tv": {"title": "Victers TV", "url": "https://932y4x26ljv8-hls-live.5centscdn.com/victers/tv.stream/victers/tv1/chunks.m3u8"},
@@ -49,7 +48,7 @@ STATION_CATEGORIES = {
         "manorama_news": {"title": "Manorama News", "url": "https://mmtvnews1.akamaized.net/v1/master/673630b269b766886555eebfddd4f27f3de3ab50/mmtvNewsCampaign1/index.m3u8"},
         "en_vivo": {"title": "RT En Vivo", "url": "https://rt-esp.rttv.com/dvr/rtesp/playlist_1600Kb.m3u8"},
     },
-    # 3. Other Stations Section
+    # Other Stations Section
     "others": {
         "muthnabi_radio": {"title": "Muthnabi Radio", "url": "http://cast4.my-control-panel.com/proxy/muthnabi/stream"},
         "radio_nellikka": {"title": "Radio Nellikka", "url": "https://usa20.fastcast4u.com:2130/stream"},
@@ -96,7 +95,7 @@ STATION_CATEGORIES = {
     }
 }
 
-# Fast-lookup mapping
+# Lookup map for streaming
 RADIO_STATIONS = {}
 
 def sync_radio_stations():
@@ -118,14 +117,14 @@ def make_slug(name):
     return slug or "air_station"
 
 def fetch_all_akashvani_stations():
-    """Fetches every station available in the codito/akashvani repository."""
+    """Fetches every station available in codito/akashvani stations.json."""
     for url in GITHUB_JSON_URLS:
         try:
             req = urllib.request.Request(
                 url,
                 headers={"User-Agent": "Mozilla/5.0 (Flask Radio Player)"}
             )
-            with urllib.request.urlopen(req, timeout=10) as response:
+            with urllib.request.urlopen(req, timeout=12) as response:
                 if response.status == 200:
                     data = json.loads(response.read().decode("utf-8"))
                     extracted = []
@@ -176,9 +175,7 @@ def update_all_akashvani():
     print(f"✅ Successfully loaded {len(new_air_stations)} Akashvani stations from GitHub.")
 
 def schedule_periodic_updates(interval_hours=12):
-    """Background worker to fetch on launch and refresh every 12 hours without blocking startup."""
     def worker():
-        update_all_akashvani()
         while True:
             time.sleep(interval_hours * 3600)
             update_all_akashvani()
@@ -186,7 +183,8 @@ def schedule_periodic_updates(interval_hours=12):
     thread = threading.Thread(target=worker, daemon=True)
     thread.start()
 
-# Start background sync immediately (non-blocking)
+# Load all stations on startup and start background refresh
+update_all_akashvani()
 schedule_periodic_updates(interval_hours=12)
 
 
@@ -437,7 +435,7 @@ def index():
             }
             .list-button:hover { background: #00ff00; color: black; }
 
-            /* Mini-Player */
+            /* Mini-Player at bottom */
             #player {
                 position: fixed; 
                 bottom: 0; 
@@ -490,148 +488,5 @@ def index():
             <button id="btn-others" class="tab-btn" onclick="switchTab('others')">🌐 Others ({{ categories.others|length }})</button>
         </div>
 
-        <!-- AIR Tab -->
-        <div id="tab-air" class="tab-pane active">
-            <div class="station-grid">
-                {% for id, item in categories.air.items() %}
-                    <div class="station" data-title="{{ item.title }}">
-                        <div class="station-title">{{ loop.index }}. {{ item.title }}</div>
-                        <div class="controls-group">
-                            <a href="javascript:void(0)" onclick="play('{{id}}')" class="list-button">▶ Play</a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- TV Streams Tab -->
-        <div id="tab-tv" class="tab-pane">
-            <div class="station-grid">
-                {% for id, item in categories.tv.items() %}
-                    <div class="station" data-title="{{ item.title }}">
-                        <div class="station-title">{{ loop.index }}. {{ item.title }}</div>
-                        <div class="controls-group">
-                            <a href="javascript:void(0)" onclick="play('{{id}}')" class="list-button">▶ Play</a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- Others Tab -->
-        <div id="tab-others" class="tab-pane">
-            <div class="station-grid">
-                {% for id, item in categories.others.items() %}
-                    <div class="station" data-title="{{ item.title }}">
-                        <div class="station-title">{{ loop.index }}. {{ item.title }}</div>
-                        <div class="controls-group">
-                            <a href="javascript:void(0)" onclick="play('{{id}}')" class="list-button">▶ Play</a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-
-        <!-- Mini-Player -->
-        <div id="player" style="display:none;">
-            <div class="info" id="nowPlaying"></div>
-            <audio id="audio" controls autoplay></audio>
-            <div class="player-controls">
-                <button onclick="copyUrl()" id="playerCopyButton">🔗 Copy</button>
-            </div>
-            <div class="info">2=Prev 5=Play/Pause 8=Next 0=Back</div>
-        </div>
-
-        <script>
-            const allStations = {{ all_stations|tojson }};
-            let current = -1;
-            const audio = document.getElementById("audio");
-            const player = document.getElementById("player");
-            const now = document.getElementById("nowPlaying");
-            const streamBaseUrl = "{{ stream_base_url }}";
-            const playerCopyBtn = document.getElementById("playerCopyButton");
-
-            function switchTab(tabKey) {
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-
-                const btn = document.getElementById('btn-' + tabKey);
-                const pane = document.getElementById('tab-' + tabKey);
-                if (btn && pane) {
-                    btn.classList.add('active');
-                    pane.classList.add('active');
-                    filterStations();
-                }
-            }
-
-            function filterStations() {
-                const q = document.getElementById('searchInput').value.toLowerCase().trim();
-                const activePane = document.querySelector('.tab-pane.active');
-                if (!activePane) return;
-                const cards = activePane.querySelectorAll('.station');
-                cards.forEach(card => {
-                    const title = card.getAttribute('data-title') || card.innerText;
-                    card.style.display = title.toLowerCase().includes(q) ? 'flex' : 'none';
-                });
-            }
-
-            function play(id){
-                current = allStations.findIndex(s => s.id === id);
-                if (current === -1) return;
-                const st = allStations[current];
-                audio.src = streamBaseUrl + st.id; 
-                audio.play(); 
-                now.textContent = "▶ " + st.title.toUpperCase();
-                player.style.display = "block";
-                playerCopyBtn.textContent = '🔗 Copy';
-                window.scrollTo(0, document.body.scrollHeight);
-            }
-
-            function copyUrl(){
-                if(current === -1) return;
-                const stationId = allStations[current].id;
-                const streamUrl = streamBaseUrl + stationId;
-                navigator.clipboard?.writeText(streamUrl);
-                playerCopyBtn.textContent = '✅ Copied!';
-                setTimeout(() => playerCopyBtn.textContent = '🔗 Copy', 2000);
-            }
-
-            function prev(){ 
-                if(current > 0) {
-                    play(allStations[current-1].id);
-                }
-            }
-            function next(){ 
-                if(current < allStations.length-1) {
-                    play(allStations[current+1].id);
-                }
-            }
-            function back(){ 
-                player.style.display = "none"; 
-                audio.pause(); 
-                current = -1; 
-            }
-
-            document.addEventListener("keydown", e=>{
-                const k = e.key;
-                if(player.style.display === "block"){
-                    if(k==="2") prev();
-                    else if(k==="8") next();
-                    else if(k==="5") (audio.paused?audio.play():audio.pause());
-                    else if(k==="0") back();
-                }
-            });
-        </script>
-    </body>
-    </html>
-    """
-    return render_template_string(
-        html,
-        categories=STATION_CATEGORIES,
-        all_stations=all_stations,
-        stream_base_url=stream_base_url
-    )
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+        <!-- AIR Tab (All stations from GitHub) -->
+        <div id="tab-air"
