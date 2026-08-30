@@ -1,21 +1,23 @@
-# Use an official lightweight Python image
-FROM python:3.9-slim
+FROM python:3.11-slim
 
-# Install dependencies
-RUN apt-get update && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+# 1. Install FFmpeg and system certificates
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ffmpeg ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
-# Set the working directory
+# 2. Set working directory
 WORKDIR /app
 
-# Copy the application files
+# 3. Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# 4. Copy app code
 COPY . .
 
-# Expose port 8000
+# 5. Set default port
+ENV PORT=8000
 EXPOSE 8000
 
-# Run the application
-CMD ["python", "stream.py"]
-
+# 6. Start the server
+CMD ["python", "app.py"]
