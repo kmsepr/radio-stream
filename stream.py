@@ -96,11 +96,10 @@ STATION_CATEGORIES = {
     }
 }
 
-# Stream lookup mapping
+# Fast-lookup mapping
 RADIO_STATIONS = {}
 
 def sync_radio_stations():
-    """Flattens categorized stations into a fast-lookup dictionary."""
     RADIO_STATIONS.clear()
     for cat in STATION_CATEGORIES.values():
         for st_id, st_info in cat.items():
@@ -179,7 +178,6 @@ def update_all_akashvani():
 def schedule_periodic_updates(interval_hours=12):
     """Background worker to fetch on launch and refresh every 12 hours without blocking startup."""
     def worker():
-        # Fetch in background so Flask binds to port immediately
         update_all_akashvani()
         while True:
             time.sleep(interval_hours * 3600)
@@ -188,7 +186,7 @@ def schedule_periodic_updates(interval_hours=12):
     thread = threading.Thread(target=worker, daemon=True)
     thread.start()
 
-# Start background sync immediately
+# Start background sync immediately (non-blocking)
 schedule_periodic_updates(interval_hours=12)
 
 
@@ -635,6 +633,5 @@ def index():
     )
 
 if __name__ == "__main__":
-    # Dynamically bind to Koyeb's assigned PORT environment variable, default to 8000
     port = int(os.environ.get("PORT", 8000))
-    app.run(host="0.0.0.
+    app.run(host="0.0.0.0", port=port, debug=False)
