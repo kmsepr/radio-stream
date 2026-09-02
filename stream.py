@@ -218,7 +218,7 @@ def generate_stream(url):
         base += [
             "-vn",
             "-ac", "1",
-            "-b:a", "40k",
+            "-b:a", "64k",
             "-f", "mp3",
             "-"
         ]
